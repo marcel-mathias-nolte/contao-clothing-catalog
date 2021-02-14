@@ -1,20 +1,21 @@
 <?php
 
-/*
- * This file is part of SkeletonBundle.
+/**
+ * clothing catalog for Contao Open Source CMS
  *
- * (c) John Doe
- *
- * @license LGPL-3.0-or-later
+ * @package ContaoClothingCatalogBundle
+ * @author  Marcel Mathias Nolte
+ * @website	https://github.com/marcel-mathias-nolte
+ * @license LGPL
  */
 
-namespace MarcelMathiasNolte\SkeletonBundle\ContaoManager;
+namespace MarcelMathiasNolte\ContaoClothingCatalogBundle\ContaoManager;
 
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
-use MarcelMathiasNolte\SkeletonBundle\ContaoSkeletonBundle;
+use MarcelMathiasNolte\ContaoClothingCatalogBundle\ContaoClothingCatalogBundle;
 
 class Plugin implements BundlePluginInterface
 {
@@ -24,8 +25,10 @@ class Plugin implements BundlePluginInterface
     public function getBundles(ParserInterface $parser)
     {
         return [
-            BundleConfig::create(ContaoSkeletonBundle::class)
-                ->setLoadAfter([ContaoCoreBundle::class]),
+            BundleConfig::create(ContaoClothingCatalogBundle::class)
+                ->setLoadAfter([
+                    ContaoCoreBundle::class
+                ]),
         ];
     }
 }

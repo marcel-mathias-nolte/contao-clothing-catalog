@@ -1,24 +1,27 @@
 <?php
 
-/*
- * This file is part of SkeletonBundle.
+/**
+ * clothing catalog for Contao Open Source CMS
  *
- * (c) John Doe
- *
- * @license LGPL-3.0-or-later
+ * @package ContaoClothingCatalogBundle
+ * @author  Marcel Mathias Nolte
+ * @website	https://github.com/marcel-mathias-nolte
+ * @license LGPL
  */
 
-namespace MarcelMathiasNolte\SkeletonBundle\DependencyInjection;
+namespace MarcelMathiasNolte\ContaoClothingCatalogBundle\DependencyInjection;
 
+use Exception;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-class ContaoSkeletonExtension extends Extension
+class ContaoClothingCatalogExtension extends Extension
 {
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
     public function load(array $mergedConfig, ContainerBuilder $container)
     {
