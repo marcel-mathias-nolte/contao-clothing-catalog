@@ -12,6 +12,12 @@
 namespace MarcelMathiasNolte\ContaoClothingCatalogBundle;
 
 /**
+ * Models
+ */
+
+$GLOBALS['TL_MODELS']['tl_clothing_categories'] = Models\ClothingCategoryModel::class;
+
+/**
  * Hooks
  */
 
@@ -19,12 +25,12 @@ namespace MarcelMathiasNolte\ContaoClothingCatalogBundle;
  * Backend Modules
  */
 if (!isset($GLOBALS['BE_MOD']['clothing_catalog'])) {
-    \Contao\ArrayUtil::arrayInsert($GLOBALS['BE_MOD'], 0, array(
+    array_insert($GLOBALS['BE_MOD'], 0, array(
         'clothing_catalog' => array()
     ));
 }
 if (!isset($GLOBALS['BE_MOD']['clothing_catalog']['clothing_catalog_categories'])) {
-    \Contao\ArrayUtil::arrayInsert($GLOBALS['BE_MOD']['clothing_catalog'], 3, array(
+    array_insert($GLOBALS['BE_MOD']['clothing_catalog'], 3, array(
         'clothing_catalog_categories' => array(
             'tables' => array('tl_clothing_categories')
         ),
