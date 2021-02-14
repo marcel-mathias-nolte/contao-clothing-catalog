@@ -16,6 +16,8 @@ namespace MarcelMathiasNolte\ContaoClothingCatalogBundle;
  */
 
 $GLOBALS['TL_MODELS']['tl_clothing_categories'] = Models\ClothingCategoryModel::class;
+$GLOBALS['TL_MODELS']['tl_clothing_colors'] = Models\ClothingColorModel::class;
+$GLOBALS['TL_MODELS']['tl_clothing_materials'] = Models\ClothingMaterialModel::class;
 
 /**
  * Hooks
@@ -34,5 +36,17 @@ if (!isset($GLOBALS['BE_MOD']['clothing_catalog']['clothing_catalog_categories']
         'clothing_catalog_categories' => array(
             'tables' => array('tl_clothing_categories')
         ),
+        'clothing_catalog_colors' => array(
+            'tables' => array('tl_clothing_colors')
+        ),
+        'clothing_catalog_materials' => array(
+            'tables' => array('tl_clothing_materials')
+        ),
     ));
+}
+/**
+ * Backend Stylesheet
+ */
+if( TL_MODE === 'BE' ) {
+    $GLOBALS['TL_CSS'][] = 'bundles/contaoclothingcatalog/css/backend.css';
 }

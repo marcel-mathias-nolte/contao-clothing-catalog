@@ -9,21 +9,19 @@
  * @license LGPL
  */
 
-$GLOBALS['TL_DCA']['tl_clothing_categories'] = array
+$GLOBALS['TL_DCA']['tl_clothing_materials'] = array
 (
     // Config
     'config' => array
     (
         'dataContainer'               => 'Table',
         'enableVersioning'            => true,
-        'markAsCopy'                  => 'title',
         'sql' => array
         (
             'keys' => array
             (
                 'id' => 'primary',
-                'alias' => 'index',
-                'pid' => 'index'
+                'alias' => 'index'
             )
         )
     ),
@@ -33,13 +31,15 @@ $GLOBALS['TL_DCA']['tl_clothing_categories'] = array
     (
         'sorting' => array
         (
-            'mode'                    => 5,
-            'paste_button_callback'   => array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingCategories', 'pasteCategory'),
+            'mode'                    => 1,
+            'flag'                    => 1,
+            'fields'                  => array('title'),
             'panelLayout'             => 'search'
         ),
         'label' => array
         (
             'fields'                  => array('title'),
+            'labelcallback'           =>  array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\CLothingMaterials', 'generateLabel')
         ),
         'global_operations' => array
         (
@@ -63,24 +63,6 @@ $GLOBALS['TL_DCA']['tl_clothing_categories'] = array
                 'href'                => 'act=edit',
                 'icon'                => 'edit.svg',
             ),
-            'copy' => array
-            (
-                'href'                => 'act=paste&amp;mode=copy',
-                'icon'                => 'copy.svg',
-                'attributes'          => 'onclick="Backend.getScrollOffset()"',
-            ),
-            'copyChilds' => array
-            (
-                'href'                => 'act=paste&amp;mode=copy&amp;childs=1',
-                'icon'                => 'copychilds.svg',
-                'attributes'          => 'onclick="Backend.getScrollOffset()"',
-            ),
-            'cut' => array
-            (
-                'href'                => 'act=paste&amp;mode=cut',
-                'icon'                => 'cut.svg',
-                'attributes'          => 'onclick="Backend.getScrollOffset()"',
-            ),
             'delete' => array
             (
                 'href'                => 'act=delete',
@@ -100,7 +82,7 @@ $GLOBALS['TL_DCA']['tl_clothing_categories'] = array
     (
         'buttons_callback' => array
         (
-            array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingCategories', 'addAliasButton')
+            array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\CLothingMaterials', 'addAliasButton')
         )
     ),
 
@@ -118,14 +100,6 @@ $GLOBALS['TL_DCA']['tl_clothing_categories'] = array
             'label'                   => array('ID'),
             'search'                  => true,
             'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-        ),
-        'pid' => array
-        (
-            'sql'                     => "int(10) unsigned NOT NULL default 0"
-        ),
-        'sorting' => array
-        (
-            'sql'                     => "int(10) unsigned NOT NULL default 0"
         ),
         'tstamp' => array
         (
@@ -145,21 +119,21 @@ $GLOBALS['TL_DCA']['tl_clothing_categories'] = array
             'eval'                    => array('rgxp'=>'folderalias', 'doNotCopy'=>true, 'maxlength'=>255, 'tl_class'=>'w50 clr'),
             'save_callback' => array
             (
-                array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingCategories', 'generateAlias')
+                array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\CLothingMaterials', 'generateAlias')
             ),
             'sql'                     => "varchar(255) BINARY NOT NULL default ''"
-        ),
-        'singleSRC' => array
-        (
-            'inputType'               => 'fileTree',
-            'eval'                    => array('fieldType'=>'radio', 'files'=>true, 'filesOnly'=>true, 'tl_class'=>'clr', 'extensions'=>\Contao\Config::get('validImageTypes')),
-            'sql'                     => 'blob NULL'
         ),
         'color' => array
         (
             'inputType'               => 'text',
             'eval'                    => array('maxlength'=>6, 'multiple'=>true, 'size'=>2, 'colorpicker'=>true, 'isHexColor'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50 wizard'),
             'sql'                     => "varchar(64) NOT NULL default ''"
+        ),
+        'singleSRC' => array
+        (
+            'inputType'               => 'fileTree',
+            'eval'                    => array('fieldType'=>'radio', 'files'=>true, 'filesOnly'=>true, 'tl_class'=>'clr', 'extensions'=>\Contao\Config::get('validImageTypes')),
+            'sql'                     => 'blob NULL'
         )
     )
 );

@@ -49,7 +49,7 @@ use Contao\Model\Collection;
  * @method static integer countByTitle($val, array $opt=array())
  * @method static integer countByAlias($val, array $opt=array())
  *
- * @author Leo Feyer <https://github.com/leofeyer>
+ * @author  Marcel Mathias Nolte
  */
 class ClothingCategoryModel extends Model
 {

@@ -12,7 +12,7 @@
 namespace MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks;
 
 use Backend;
-use ClothingCategoryModel;
+use ClothingMaterialModel;
 use DataContainer;
 use Exception;
 use Image;
@@ -29,11 +29,11 @@ use function in_array;
  *
  * @author  Marcel Mathias Nolte
  */
-class ClothingCategories extends Backend
+class ClothingMaterials extends Backend
 {
 
-    private $strAliasPrefix = 'category-';
-    private $strTableName = 'tl_clothing_categories';
+    private $strAliasPrefix = 'material-';
+    private $strTableName = 'tl_clothing_materials';
 
     /**
      * Auto-generate an alias if it has not been set yet
@@ -100,40 +100,47 @@ class ClothingCategories extends Backend
     }
 
     /**
-     * Return the paste category button
+     * Generate the list label
      *
-     * @param DataContainer $dc
-     * @param array         $row
-     * @param string        $table
-     * @param boolean       $cr
-     * @param array         $arrClipboard
-     *
-     * @return string
+     * @param $row
+     * @param $label
+     * @return var
      */
-    public function pasteCategory(DataContainer $dc, $row, $table, $cr, $arrClipboard=null)
-    {
-        $disablePA = false;
-        $disablePI = false;
+    public function generateLabel($row, $label){
+        if (trim($row['color']) != '') {
+            $R1 = hexdec(substr($row['color'], 0, 2));
+            $G1 = hexdec(substr($row['color'], 2, 2));
+            $B1 = hexdec(substr($row['color'], 4, 2));
 
-        // Disable all buttons if there is a circular reference
-        if ($arrClipboard !== false && (($arrClipboard['mode'] == 'cut' && ($cr == 1 || $arrClipboard['id'] == $row['id'])) || ($arrClipboard['mode'] == 'cutAll' && ($cr == 1 || in_array($row['id'], $arrClipboard['id'])))))
-        {
-            $disablePA = true;
-            $disablePI = true;
+            $blackColor = "#000000";
+            $R2BlackColor = hexdec(substr($blackColor, 0, 2));
+            $G2BlackColor = hexdec(substr($blackColor, 2, 2));
+            $B2BlackColor = hexdec(substr($blackColor, 4, 2));
+
+            $L1 = 0.2126 * pow($R1 / 255, 2.2) +
+                0.7152 * pow($G1 / 255, 2.2) +
+                0.0722 * pow($B1 / 255, 2.2);
+
+            $L2 = 0.2126 * pow($R2BlackColor / 255, 2.2) +
+                0.7152 * pow($G2BlackColor / 255, 2.2) +
+                0.0722 * pow($B2BlackColor / 255, 2.2);
+
+            if ($L1 > $L2) {
+                $contrastRatio = (int)(($L1 + 0.05) / ($L2 + 0.05));
+            } else {
+                $contrastRatio = (int)(($L2 + 0.05) / ($L1 + 0.05));
+            }
+
+            if ($contrastRatio > 5) {
+                $color = '#000000';
+            } else {
+                $color = '#FFFFFF';
+            }
+
+            return '<span style="background-color: #' . $row['color'] . '; color: ' . $color . '; font-weight: bold;">' . $label . '</span>';
         }
 
-        $return = '';
-
-        // Return the buttons
-        $imagePasteAfter = Image::getHtml('pasteafter.svg', sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id']));
-        $imagePasteInto = Image::getHtml('pasteinto.svg', sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $row['id']));
-
-        if ($row['id'] > 0)
-        {
-            $return = $disablePA ? Image::getHtml('pasteafter_.svg') . ' ' : '<a href="' . $this->addToUrl('act=' . $arrClipboard['mode'] . '&amp;mode=1&amp;pid=' . $row['id'] . (!is_array($arrClipboard['id']) ? '&amp;id=' . $arrClipboard['id'] : '')) . '" title="' . StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])) . '" onclick="Backend.getScrollOffset()">' . $imagePasteAfter . '</a> ';
-        }
-
-        return $return . ($disablePI ? Image::getHtml('pasteinto_.svg') . ' ' : '<a href="' . $this->addToUrl('act=' . $arrClipboard['mode'] . '&amp;mode=2&amp;pid=' . $row['id'] . (!is_array($arrClipboard['id']) ? '&amp;id=' . $arrClipboard['id'] : '')) . '" title="' . StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][$row['id'] > 0 ? 1 : 0], $row['id'])) . '" onclick="Backend.getScrollOffset()">' . $imagePasteInto . '</a> ');
+        return $label;
     }
 
     /**
@@ -158,15 +165,15 @@ class ClothingCategories extends Backend
 
             foreach ($ids as $id)
             {
-                $objClothingCategory = ClothingCategoryModel::findWithDetails($id);
+                $objClothingMaterial = ClothingMaterialModel::findWithDetails($id);
 
-                if ($objClothingCategory === null)
+                if ($objClothingMaterial === null)
                 {
                     continue;
                 }
 
                 $dc->id = $id;
-                $dc->activeRecord = $objClothingCategory;
+                $dc->activeRecord = $objClothingMaterial;
 
                 $strAlias = '';
 
@@ -188,13 +195,13 @@ class ClothingCategories extends Backend
                 }
 
                 // The alias has not changed
-                if ($strAlias == $objClothingCategory->alias)
+                if ($strAlias == $objClothingMaterial->alias)
                 {
                     continue;
                 }
 
                 // Initialize the version manager
-                $objVersions = new Versions('tl_clothing_categories', $id);
+                $objVersions = new Versions('tl_clothing_materials', $id);
                 $objVersions->initialize();
 
                 // Store the new alias
