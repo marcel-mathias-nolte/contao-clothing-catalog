@@ -13,15 +13,20 @@
 
 // Legends
 $GLOBALS['TL_LANG']['tl_clothing_items']['title_legend']              = 'Name/Bezeichnung';
-$GLOBALS['TL_LANG']['tl_clothing_items']['appearance_legend']         = 'Darstellung';
+$GLOBALS['TL_LANG']['tl_clothing_items']['property_legend']           = 'Eigenschaften';
+$GLOBALS['TL_LANG']['tl_clothing_items']['published_legend']          = 'Veröffentlichung';
 
 // Fields
-$GLOBALS['TL_LANG']['tl_clothing_items']['alias']                     = array('Alias','Alias der Farbe');
-$GLOBALS['TL_LANG']['tl_clothing_items']['title']                     = array('Titel','Titel der Farbe');
-$GLOBALS['TL_LANG']['tl_clothing_items']['color']                     = array('Hauptfarbe','Hauptfarbe der Farbe');
+$GLOBALS['TL_LANG']['tl_clothing_items']['alias']                     = array('Alias','Alias des Kleidungsstücks');
+$GLOBALS['TL_LANG']['tl_clothing_items']['title']                     = array('Titel','Titel des Kleidungsstücks');
+$GLOBALS['TL_LANG']['tl_clothing_items']['color']                     = array('Hauptfarbe','Hauptfarbe des Kleidungsstücks');
+$GLOBALS['TL_LANG']['tl_clothing_items']['materials']                 = array('Materialien','Materialien des Kleidungsstücks');
+$GLOBALS['TL_LANG']['tl_clothing_items']['multiSRC']                  = array('Bilder','Bilder des Kleidungsstücks');
 
 // Buttons
-$GLOBALS['TL_LANG']['tl_clothing_items']['new']                       = array('Neue Farbe', 'Eine neue Farbe anlegen');
-$GLOBALS['TL_LANG']['tl_clothing_items']['show']                      = array('Farbdetails', 'Details der Farbe ID %s anzeigen');
-$GLOBALS['TL_LANG']['tl_clothing_items']['edit']                      = array('Farbe bearbeiten', 'Farbe ID %s bearbeiten');
-$GLOBALS['TL_LANG']['tl_clothing_items']['delete']                    = array('Farbe löschen', 'Farbe ID %s löschen');
+$GLOBALS['TL_LANG']['tl_clothing_items']['new']                       = array('Neues Kleidungsstück', 'Ein neues Kleidungsstück anlegen');
+$GLOBALS['TL_LANG']['tl_clothing_items']['show']                      = array('Kleidungsstücksdetails', 'Details des Kleidungsstücks ID %s anzeigen');
+$GLOBALS['TL_LANG']['tl_clothing_items']['edit']                      = array('Kleidungsstück bearbeiten', 'Kleidungsstück ID %s bearbeiten');
+$GLOBALS['TL_LANG']['tl_clothing_items']['copy']                      = array('Kleidungsstück kopieren', 'Kleidungsstück ID %s kopieren');
+$GLOBALS['TL_LANG']['tl_clothing_items']['cut']                       = array('Kleidungsstück verschieben', 'Kleidungsstück ID %s verschieben');
+$GLOBALS['TL_LANG']['tl_clothing_items']['delete']                    = array('Kleidungsstück löschen', 'Kleidungsstück ID %s löschen');

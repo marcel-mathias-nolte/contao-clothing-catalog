@@ -180,6 +180,18 @@ $GLOBALS['TL_DCA']['tl_clothing_items'] = array
             'inputType'               => 'checkbox',
             'eval'                    => array('doNotCopy'=>true),
             'sql'                     => "char(1) NOT NULL default ''"
+        ),
+		'multiSRC' => array
+        (
+            'exclude'                 => true,
+            'inputType'               => 'fileTree',
+            'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'orderField'=>'orderSRC', 'files'=>true, 'extensions'=>\Contao\Config::get('validImageTypes'), 'isGallery' => true),
+            'sql'                     => "blob NULL"
+        ),
+        'orderSRC' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['MSC']['sortOrder'],
+            'sql'                     => "blob NULL"
         )
     )
 );
