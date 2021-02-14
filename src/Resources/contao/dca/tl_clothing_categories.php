@@ -34,7 +34,7 @@ $GLOBALS['TL_DCA']['tl_clothing_categories'] = array
         'sorting' => array
         (
             'mode'                    => 5,
-            'paste_button_callback'   => array('ClothingCategories', 'pasteCategory'),
+            'paste_button_callback'   => array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingCategories', 'pasteCategory'),
             'panelLayout'             => 'search'
         ),
         'label' => array
@@ -100,7 +100,7 @@ $GLOBALS['TL_DCA']['tl_clothing_categories'] = array
     (
         'buttons_callback' => array
         (
-            array('ClothingCategories', 'addAliasButton')
+            array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingCategories', 'addAliasButton')
         )
     ),
 
@@ -147,7 +147,7 @@ $GLOBALS['TL_DCA']['tl_clothing_categories'] = array
             'eval'                    => array('rgxp'=>'folderalias', 'doNotCopy'=>true, 'maxlength'=>255, 'tl_class'=>'w50 clr'),
             'save_callback' => array
             (
-                array('ClothingCategories', 'generateAlias')
+                array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingCategories', 'generateAlias')
             ),
             'sql'                     => "varchar(255) BINARY NOT NULL default ''"
         ),
