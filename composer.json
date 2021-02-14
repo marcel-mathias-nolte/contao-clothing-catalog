@@ -1,7 +1,7 @@
 {
-    "name": "marcel-mathias-nolte/contao-mobile-detection-content",
-    "description": "MobileContent extension for Contao Open Source CMS",
-    "keywords": ["contao", "mobile", "content"],
+    "name": "marcel-mathias-nolte/contao-clothing-catalog",
+    "description": "Clothing catalog extension for Contao Open Source CMS",
+    "keywords": ["contao", "clothing", "catalog"],
     "type": "contao-module",
     "license": "LGPL-3.0-or-later",
     "authors": [
@@ -38,7 +38,7 @@
         "contao-manager-plugin": "MarcelMathiasNolte\\ContaoClothingCatalogBundle\\ContaoManager\\Plugin"
     },
     "support": {
-        "issues": "https://github.com/marcel-mathias-nolte/contao-mobile-detection-content/issues",
-        "source": "https://github.com/marcel-mathias-nolte/contao-mobile-detection-content"
+        "issues": "https://github.com/marcel-mathias-nolte/contao-clothing-catalog/issues",
+        "source": "https://github.com/marcel-mathias-nolte/contao-clothing-catalog"
     }
 }
