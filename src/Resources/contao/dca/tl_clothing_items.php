@@ -23,7 +23,7 @@ $GLOBALS['TL_DCA']['tl_clothing_items'] = array
             'keys' => array
             (
                 'id' => 'primary',
-                'pid' => 'primary',
+                'pid' => 'index',
                 'alias' => 'index'
             )
         )

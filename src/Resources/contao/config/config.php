@@ -33,6 +33,9 @@ if (!isset($GLOBALS['BE_MOD']['clothing_catalog'])) {
 }
 if (!isset($GLOBALS['BE_MOD']['clothing_catalog']['clothing_catalog_categories'])) {
     array_insert($GLOBALS['BE_MOD']['clothing_catalog'], 3, array(
+        'clothing_catalog_items' => array(
+            'tables' => array('tl_clothing_items')
+        ),
         'clothing_catalog_categories' => array(
             'tables' => array('tl_clothing_categories')
         ),
@@ -41,7 +44,7 @@ if (!isset($GLOBALS['BE_MOD']['clothing_catalog']['clothing_catalog_categories']
         ),
         'clothing_catalog_materials' => array(
             'tables' => array('tl_clothing_materials')
-        ),
+        )
     ));
 }
 /**
