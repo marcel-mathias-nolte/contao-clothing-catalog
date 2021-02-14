@@ -11,7 +11,6 @@
 
 namespace MarcelMathiasNolte\ContaoClothingCatalogBundle;
 
-
 /**
  * Hooks
  */
@@ -20,12 +19,12 @@ namespace MarcelMathiasNolte\ContaoClothingCatalogBundle;
  * Backend Modules
  */
 if (!isset($GLOBALS['BE_MOD']['clothing_catalog'])) {
-    \ArrayUtil::arrayInsert($GLOBALS['BE_MOD'], 0, array(
+    \Contao\ArrayUtil::arrayInsert($GLOBALS['BE_MOD'], 0, array(
         'clothing_catalog' => array()
     ));
 }
 if (!isset($GLOBALS['BE_MOD']['clothing_catalog']['clothing_catalog_categories'])) {
-    \ArrayUtil::arrayInsert($GLOBALS['BE_MOD']['clothing_catalog'], 3, array(
+    \Contao\ArrayUtil::arrayInsert($GLOBALS['BE_MOD']['clothing_catalog'], 3, array(
         'clothing_catalog_categories' => array(
             'tables' => array('tl_clothing_categories')
         ),
