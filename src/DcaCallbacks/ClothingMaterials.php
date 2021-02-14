@@ -109,7 +109,7 @@ class ClothingMaterials extends Backend
     public function generateLabel($row, $label){
         if (trim($row['color']) != '') {
             $fcolor = $row['color'];
-            @deserialize($fcolor);
+            $fcolor = deserialize($fcolor);
             $fcolor = $fcolor[0];
             $R1 = hexdec(substr($fcolor, 0, 2));
             $G1 = hexdec(substr($fcolor, 2, 2));
