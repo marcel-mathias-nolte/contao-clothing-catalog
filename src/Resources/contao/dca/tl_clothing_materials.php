@@ -32,7 +32,7 @@ $GLOBALS['TL_DCA']['tl_clothing_materials'] = array
         'sorting' => array
         (
             'mode'                    => 1,
-            'flag'                    => 1,
+            'flag'                    => 11,
             'fields'                  => array('title'),
             'panelLayout'             => 'search'
         ),

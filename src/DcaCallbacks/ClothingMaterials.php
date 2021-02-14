@@ -108,9 +108,12 @@ class ClothingMaterials extends Backend
      */
     public function generateLabel($row, $label){
         if (trim($row['color']) != '') {
-            $R1 = hexdec(substr($row['color'], 0, 2));
-            $G1 = hexdec(substr($row['color'], 2, 2));
-            $B1 = hexdec(substr($row['color'], 4, 2));
+            $fcolor = $row['color'];
+            @deserialize($fcolor);
+            $fcolor = $fcolor[0];
+            $R1 = hexdec(substr($fcolor, 0, 2));
+            $G1 = hexdec(substr($fcolor, 2, 2));
+            $B1 = hexdec(substr($fcolor, 4, 2));
 
             $blackColor = "#000000";
             $R2BlackColor = hexdec(substr($blackColor, 0, 2));
@@ -137,7 +140,7 @@ class ClothingMaterials extends Backend
                 $color = '#FFFFFF';
             }
 
-            return '<span style="background-color: #' . $row['color'] . '; color: ' . $color . '; font-weight: bold;">' . $label . '</span>';
+            return '<span style="background-color: #' . $fcolor . '; color: ' . $color . '; font-weight: bold;">' . $label . '</span>';
         }
 
         return $label;

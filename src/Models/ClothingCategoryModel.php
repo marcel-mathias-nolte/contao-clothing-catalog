@@ -23,6 +23,8 @@ use Contao\Model\Collection;
  * @property integer $tstamp
  * @property string  $title
  * @property string  $alias
+ * @property string  $color
+ * @property string  $singleSRC
  *
  * @method static ClothingCategoryModel|null findById($id, array $opt=array())
  * @method static ClothingCategoryModel|null findByPk($id, array $opt=array())
@@ -32,12 +34,16 @@ use Contao\Model\Collection;
  * @method static ClothingCategoryModel|null findOneByTstamp($val, array $opt=array())
  * @method static ClothingCategoryModel|null findOneByTitle($val, array $opt=array())
  * @method static ClothingCategoryModel|null findOneByAlias($val, array $opt=array())
+ * @method static ClothingCategoryModel|null findOneByColor($val, array $opt=array())
+ * @method static ClothingCategoryModel|null findOneBySingleSRC($val, array $opt=array())
  *
  * @method static Collection|ClothingCategoryModel[]|ClothingCategoryModel|null findByPid($val, array $opt=array())
  * @method static Collection|ClothingCategoryModel[]|ClothingCategoryModel|null findBySorting($val, array $opt=array())
  * @method static Collection|ClothingCategoryModel[]|ClothingCategoryModel|null findByTstamp($val, array $opt=array())
  * @method static Collection|ClothingCategoryModel[]|ClothingCategoryModel|null findByTitle($val, array $opt=array())
  * @method static Collection|ClothingCategoryModel[]|ClothingCategoryModel|null findByAlias($val, array $opt=array())
+ * @method static Collection|ClothingCategoryModel[]|ClothingCategoryModel|null findByColor($val, array $opt=array())
+ * @method static Collection|ClothingCategoryModel[]|ClothingCategoryModel|null findBySingleSRC($val, array $opt=array())
  * @method static Collection|ClothingCategoryModel[]|ClothingCategoryModel|null findMultipleByIds($val, array $opt=array())
  * @method static Collection|ClothingCategoryModel[]|ClothingCategoryModel|null findBy($col, $val, array $opt=array())
  * @method static Collection|ClothingCategoryModel[]|ClothingCategoryModel|null findAll(array $opt=array())
@@ -48,6 +54,8 @@ use Contao\Model\Collection;
  * @method static integer countByTstamp($val, array $opt=array())
  * @method static integer countByTitle($val, array $opt=array())
  * @method static integer countByAlias($val, array $opt=array())
+ * @method static integer countByColor($val, array $opt=array())
+ * @method static integer countBySingleSRC($val, array $opt=array())
  *
  * @author  Marcel Mathias Nolte
  */
@@ -82,6 +90,30 @@ class ClothingCategoryModel extends Model
         }
 
         return static::createCollection($arrModels, static::$strTable);
+    }
+
+    /**
+     * Find the parent categories of a category
+     *
+     * @param integer $intId The category's ID
+     *
+     * @return integer[] A collection of integers
+     */
+    public static function findChildIdsById($intId)
+    {
+        $arrIds = array($intId);
+        $arrToDo = array($intId);
+
+        while (count($arrToDo) > 0)
+        {
+            $objCategories = static::findByPid(array_pop($arrToDo));
+            while ($objCategories->next()) {
+                $arrToDo[] = $objCategories->id;
+                $arrIds[] = $objCategories->id;
+            }
+        }
+
+        return $arrIds;
     }
 }
 

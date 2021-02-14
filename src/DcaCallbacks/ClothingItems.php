@@ -29,11 +29,11 @@ use function in_array;
  *
  * @author  Marcel Mathias Nolte
  */
-class ClothingColors extends Backend
+class ClothingItems extends Backend
 {
 
-    private $strAliasPrefix = 'color-';
-    private $strTableName = 'tl_clothing_colors';
+    private $strAliasPrefix = 'item-';
+    private $strTableName = 'tl_clothing_items';
 
     /**
      * Auto-generate an alias if it has not been set yet
@@ -107,43 +107,15 @@ class ClothingColors extends Backend
      * @return var
      */
     public function generateLabel($row, $label){
-        if (trim($row['color']) != '') {
-            $fcolor = $row['color'];
-            @deserialize($fcolor);
-            $fcolor = $fcolor[0];
-            $R1 = hexdec(substr($fcolor, 0, 2));
-            $G1 = hexdec(substr($fcolor, 2, 2));
-            $B1 = hexdec(substr($fcolor, 4, 2));
+        $image = 'articles';
+        $unpublished = ($row['start'] && $row['start'] > time()) || ($row['stop'] && $row['stop'] <= time());
 
-            $blackColor = "#000000";
-            $R2BlackColor = hexdec(substr($blackColor, 0, 2));
-            $G2BlackColor = hexdec(substr($blackColor, 2, 2));
-            $B2BlackColor = hexdec(substr($blackColor, 4, 2));
-
-            $L1 = 0.2126 * pow($R1 / 255, 2.2) +
-                0.7152 * pow($G1 / 255, 2.2) +
-                0.0722 * pow($B1 / 255, 2.2);
-
-            $L2 = 0.2126 * pow($R2BlackColor / 255, 2.2) +
-                0.7152 * pow($G2BlackColor / 255, 2.2) +
-                0.0722 * pow($B2BlackColor / 255, 2.2);
-
-            if ($L1 > $L2) {
-                $contrastRatio = (int)(($L1 + 0.05) / ($L2 + 0.05));
-            } else {
-                $contrastRatio = (int)(($L2 + 0.05) / ($L1 + 0.05));
-            }
-
-            if ($contrastRatio > 5) {
-                $color = '#000000';
-            } else {
-                $color = '#FFFFFF';
-            }
-
-            return '<span style="background-color: #' . $fcolor . '; color: ' . $color . '; font-weight: bold;">' . $label . '</span>';
+        if ($unpublished || !$row['published'])
+        {
+            $image .= '_';
         }
 
-        return $label;
+        return '<a href="contao/preview.php?page=' . $row['pid'] . '&amp;article=' . ($row['alias'] ?: $row['id']) . '" title="' . StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['view']) . '" target="_blank">' . Image::getHtml($image . '.svg', '', 'data-icon="' . ($unpublished ? $image : rtrim($image, '_')) . '.svg" data-icon-disabled="' . rtrim($image, '_') . '_.svg"') . '</a> ' . $label;
     }
 
     /**
@@ -222,5 +194,144 @@ class ClothingColors extends Backend
         $arrButtons['alias'] = '<button type="submit" name="alias" id="alias" class="tl_submit" accesskey="a">' . $GLOBALS['TL_LANG']['MSC']['aliasSelected'] . '</button> ';
 
         return $arrButtons;
+    }
+
+    /**
+     * Return the "toggle visibility" button
+     *
+     * @param array  $row
+     * @param string $href
+     * @param string $label
+     * @param string $title
+     * @param string $icon
+     * @param string $attributes
+     *
+     * @return string
+     */
+    public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
+    {
+        if (Input::get('tid'))
+        {
+            $this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
+            $this->redirect($this->getReferer());
+        }
+
+        $href .= '&amp;tid=' . $row['id'] . '&amp;state=' . ($row['published'] ? '' : 1);
+
+        if (!$row['published'])
+        {
+            $icon = 'invisible.svg';
+        }
+
+        return '<a href="' . $this->addToUrl($href) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"') . '</a> ';
+    }
+
+    /**
+     * Disable/enable a item
+     *
+     * @param integer       $intId
+     * @param boolean       $blnVisible
+     * @param DataContainer $dc
+     *
+     * @throws AccessDeniedException
+     */
+    public function toggleVisibility($intId, $blnVisible, DataContainer $dc=null)
+    {
+        // Set the ID and action
+        Input::setGet('id', $intId);
+        Input::setGet('act', 'toggle');
+
+        if ($dc)
+        {
+            $dc->id = $intId; // see #8043
+        }
+
+        // Trigger the onload_callback
+        if (is_array($GLOBALS['TL_DCA'][$this->strTableName]['config']['onload_callback'] ?? null))
+        {
+            foreach ($GLOBALS['TL_DCA'][$this->strTableName]['config']['onload_callback'] as $callback)
+            {
+                if (is_array($callback))
+                {
+                    $this->import($callback[0]);
+                    $this->{$callback[0]}->{$callback[1]}($dc);
+                }
+                elseif (is_callable($callback))
+                {
+                    $callback($dc);
+                }
+            }
+        }
+
+        $objRow = $this->Database->prepare("SELECT * FROM " . $this->strTableName . " WHERE id=?")
+            ->limit(1)
+            ->execute($intId);
+
+        if ($objRow->numRows < 1)
+        {
+            throw new AccessDeniedException('Invalid ' . $this->strTableName . ' ID "' . $intId . '".');
+        }
+
+        // Set the current record
+        if ($dc)
+        {
+            $dc->activeRecord = $objRow;
+        }
+
+        $objVersions = new Versions($this->strTableName, $intId);
+        $objVersions->initialize();
+
+        // Trigger the save_callback
+        if (is_array($GLOBALS['TL_DCA'][$this->strTableName]['fields']['published']['save_callback'] ?? null))
+        {
+            foreach ($GLOBALS['TL_DCA'][$this->strTableName]['fields']['published']['save_callback'] as $callback)
+            {
+                if (is_array($callback))
+                {
+                    $this->import($callback[0]);
+                    $blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, $dc);
+                }
+                elseif (is_callable($callback))
+                {
+                    $blnVisible = $callback($blnVisible, $dc);
+                }
+            }
+        }
+
+        $time = time();
+
+        // Update the database
+        $this->Database->prepare("UPDATE " . $this->strTableName . " SET tstamp=$time, published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")
+            ->execute($intId);
+
+        if ($dc)
+        {
+            $dc->activeRecord->tstamp = $time;
+            $dc->activeRecord->published = ($blnVisible ? '1' : '');
+        }
+
+        // Trigger the onsubmit_callback
+        if (is_array($GLOBALS['TL_DCA'][$this->strTableName]['config']['onsubmit_callback'] ?? null))
+        {
+            foreach ($GLOBALS['TL_DCA'][$this->strTableName]['config']['onsubmit_callback'] as $callback)
+            {
+                if (is_array($callback))
+                {
+                    $this->import($callback[0]);
+                    $this->{$callback[0]}->{$callback[1]}($dc);
+                }
+                elseif (is_callable($callback))
+                {
+                    $callback($dc);
+                }
+            }
+        }
+
+        $objVersions->create();
+
+        if ($dc)
+        {
+            $dc->invalidateCacheTags();
+        }
     }
 }

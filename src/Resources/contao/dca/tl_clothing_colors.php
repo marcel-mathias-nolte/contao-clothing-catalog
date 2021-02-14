@@ -32,23 +32,17 @@ $GLOBALS['TL_DCA']['tl_clothing_colors'] = array
         'sorting' => array
         (
             'mode'                    => 1,
-            'flag'                    => 1,
+            'flag'                    => 11,
             'fields'                  => array('title'),
             'panelLayout'             => 'search'
         ),
         'label' => array
         (
             'fields'                  => array('title'),
-            'labelcallback'           =>  array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingColors', 'generateLabel')
+            'label_callback'          => array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingColors', 'generateLabel')
         ),
         'global_operations' => array
         (
-            'toggleNodes' => array
-            (
-                'href'                => 'ptg=all',
-                'class'               => 'header_toggle',
-                'showOnSelect'        => true
-            ),
             'all' => array
             (
                 'href'                => 'act=select',
