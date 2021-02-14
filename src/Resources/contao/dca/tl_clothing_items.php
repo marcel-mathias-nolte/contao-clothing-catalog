@@ -170,7 +170,7 @@ $GLOBALS['TL_DCA']['tl_clothing_items'] = array
             'inputType'               => 'checkbox',
             'foreignKey'              => 'tl_clothing_materials.title',
             'relation'                => array('type'=>'hasMany', 'load'=>'lazy'),
-            'eval'                    => array('mandatory'=>true, 'multiple'=>true)),
+            'eval'                    => array('mandatory'=>true, 'multiple'=>true),
             'sql'                     => "blob NULL"
         ),
         'published' => array
