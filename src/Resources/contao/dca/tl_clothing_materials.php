@@ -39,7 +39,7 @@ $GLOBALS['TL_DCA']['tl_clothing_materials'] = array
         'label' => array
         (
             'fields'                  => array('title'),
-            'labelcallback'           =>  array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\CLothingMaterials', 'generateLabel')
+            'labelcallback'           =>  array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingMaterials', 'generateLabel')
         ),
         'global_operations' => array
         (
@@ -82,7 +82,7 @@ $GLOBALS['TL_DCA']['tl_clothing_materials'] = array
     (
         'buttons_callback' => array
         (
-            array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\CLothingMaterials', 'addAliasButton')
+            array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingMaterials', 'addAliasButton')
         )
     ),
 
@@ -119,7 +119,7 @@ $GLOBALS['TL_DCA']['tl_clothing_materials'] = array
             'eval'                    => array('rgxp'=>'folderalias', 'doNotCopy'=>true, 'maxlength'=>255, 'tl_class'=>'w50 clr'),
             'save_callback' => array
             (
-                array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\CLothingMaterials', 'generateAlias')
+                array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingMaterials', 'generateAlias')
             ),
             'sql'                     => "varchar(255) BINARY NOT NULL default ''"
         ),
