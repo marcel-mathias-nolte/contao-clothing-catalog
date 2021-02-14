@@ -136,11 +136,9 @@ class ClothingItemModel extends Model
      *
      * @return ClothingItemModel|null The model or null if there is no item
      */
-    public static function findPublishedByIdOrAliasAndCategoryAndMaterialAndColor($varId, $intCategory, $intColor, $intMaterial, array $arrOptions=array())
+    public static function findPublishedByCategoryAndMaterialAndColor($intCategory, $intColor, $intMaterial, array $arrOptions=array())
     {
         $t = static::$strTable;
-        $arrColumns = !preg_match('/^[1-9]\d*$/', $varId) ? array("BINARY $t.alias=?") : array("$t.id=?");
-        $arrValues = array($varId);
 
         if ($intCategory)
         {
