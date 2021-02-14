@@ -34,7 +34,8 @@ $GLOBALS['TL_DCA']['tl_clothing_materials'] = array
             'mode'                    => 1,
             'flag'                    => 11,
             'fields'                  => array('title'),
-            'panelLayout'             => 'search'
+            'panelLayout'             => 'search',
+            'disableGrouping'         => true
         ),
         'label' => array
         (
