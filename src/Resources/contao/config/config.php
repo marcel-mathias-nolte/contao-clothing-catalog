@@ -23,12 +23,12 @@ $GLOBALS['TL_MODELS']['tl_clothing_materials'] = Models\ClothingMaterialModel::c
  * Content Elements
  */
 
-if (!isset($GLOBALS['CTE']['clothing_catalog'])) {
+if (!isset($GLOBALS['TL_CTE']['clothing_catalog'])) {
     array_insert($GLOBALS['CTE'], 1, array(
         'clothing_catalog' => array()
     ));
 }
-array_insert($GLOBALS['CTE']['clothing_catalog'], 0, array(
+array_insert($GLOBALS['TL_CTE']['clothing_catalog'], 0, array(
     'clothing_catalog_filter' => '\\MarcelMathiasNolte\\ContaoClothingCatalogBundle\\Elements\\ContentClothingFilter',
     'clothing_catalog_list'   => '\\MarcelMathiasNolte\\ContaoClothingCatalogBundle\\Elements\\ContentClothingList',
     'clothing_catalog_details' => '\\MarcelMathiasNolte\\ContaoClothingCatalogBundle\\Elements\\ContentClothingDetails'
