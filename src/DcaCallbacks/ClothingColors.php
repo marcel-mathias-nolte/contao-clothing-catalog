@@ -113,7 +113,7 @@ class ClothingColors extends Backend
             $fcolor = deserialize($fcolor);
             $fcolor = $fcolor[0];
             $color = ContentClothing::getContrastColor($fcolor);
-            return '<div style="width: 2em; height: 1em; margin-right: 1em; display: inline-block; background-color: #' . $fcolor . '; border: 1px solid ' . $color . ';"></div>' . $color . ';">' . $label;
+            return '<div style="width: 2em; height: 1em; margin-right: 1em; display: inline-block; background-color: #' . $fcolor . '; border: 1px solid ' . $color . ';"></div>' . $label;
         }
 
         return $label;
