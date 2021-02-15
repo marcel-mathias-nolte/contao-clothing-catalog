@@ -13,6 +13,7 @@ namespace MarcelMathiasNolte\ContaoClothingCatalogBundle\Models;
 
 use Contao\Model;
 use Contao\Model\Collection;
+use Date;
 
 /**
  * Reads and writes clothing categories
