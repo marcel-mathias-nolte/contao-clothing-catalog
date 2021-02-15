@@ -24,7 +24,7 @@ $GLOBALS['TL_MODELS']['tl_clothing_materials'] = Models\ClothingMaterialModel::c
  */
 
 if (!isset($GLOBALS['TL_CTE']['clothing_catalog'])) {
-    array_insert($GLOBALS['CTE'], 1, array(
+    array_insert($GLOBALS['TL_CTE'], 1, array(
         'clothing_catalog' => array()
     ));
 }
