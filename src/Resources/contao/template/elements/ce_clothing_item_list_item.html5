@@ -1,0 +1,2 @@
+<div class="clothing_list_item<?php echo $this->class ? ' ' . $this->class : ''; ?>">
+</div>

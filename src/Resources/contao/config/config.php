@@ -20,12 +20,24 @@ $GLOBALS['TL_MODELS']['tl_clothing_colors'] = Models\ClothingColorModel::class;
 $GLOBALS['TL_MODELS']['tl_clothing_materials'] = Models\ClothingMaterialModel::class;
 
 /**
- * Hooks
+ * Content Elements
  */
+
+if (!isset($GLOBALS['CTE']['clothing_catalog'])) {
+    array_insert($GLOBALS['CTE'], 1, array(
+        'clothing_catalog' => array()
+    ));
+}
+array_insert($GLOBALS['CTE']['clothing_catalog'], 0, array(
+    'clothing_catalog_filter' => '\\MarcelMathiasNolte\\ContaoClothingCatalogBundle\\Elements\\ContentClothingFilter',
+    'clothing_catalog_list'   => '\\MarcelMathiasNolte\\ContaoClothingCatalogBundle\\Elements\\ContentClothingList',
+    'clothing_catalog_details' => '\\MarcelMathiasNolte\\ContaoClothingCatalogBundle\\Elements\\ContentClothingDetails'
+));
 
 /**
  * Backend Modules
  */
+
 if (!isset($GLOBALS['BE_MOD']['clothing_catalog'])) {
     array_insert($GLOBALS['BE_MOD'], 0, array(
         'clothing_catalog' => array()
@@ -47,9 +59,11 @@ if (!isset($GLOBALS['BE_MOD']['clothing_catalog']['clothing_catalog_categories']
         )
     ));
 }
+
 /**
  * Backend Stylesheet
  */
+
 if( TL_MODE === 'BE' ) {
     $GLOBALS['TL_CSS'][] = 'bundles/contaoclothingcatalog/css/backend.css';
 }

@@ -17,6 +17,7 @@ use DataContainer;
 use Exception;
 use Image;
 use Input;
+use MarcelMathiasNolte\ContaoClothingCatalogBundle\Elements\ContentClothing;
 use PageModel;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use StringUtil;
@@ -111,36 +112,8 @@ class ClothingColors extends Backend
             $fcolor = $row['color'];
             $fcolor = deserialize($fcolor);
             $fcolor = $fcolor[0];
-            $R1 = hexdec(substr($fcolor, 0, 2));
-            $G1 = hexdec(substr($fcolor, 2, 2));
-            $B1 = hexdec(substr($fcolor, 4, 2));
-
-            $blackColor = "#000000";
-            $R2BlackColor = hexdec(substr($blackColor, 0, 2));
-            $G2BlackColor = hexdec(substr($blackColor, 2, 2));
-            $B2BlackColor = hexdec(substr($blackColor, 4, 2));
-
-            $L1 = 0.2126 * pow($R1 / 255, 2.2) +
-                0.7152 * pow($G1 / 255, 2.2) +
-                0.0722 * pow($B1 / 255, 2.2);
-
-            $L2 = 0.2126 * pow($R2BlackColor / 255, 2.2) +
-                0.7152 * pow($G2BlackColor / 255, 2.2) +
-                0.0722 * pow($B2BlackColor / 255, 2.2);
-
-            if ($L1 > $L2) {
-                $contrastRatio = (int)(($L1 + 0.05) / ($L2 + 0.05));
-            } else {
-                $contrastRatio = (int)(($L2 + 0.05) / ($L1 + 0.05));
-            }
-
-            if ($contrastRatio > 5) {
-                $color = '#000000';
-            } else {
-                $color = '#FFFFFF';
-            }
-
-            return '<span style="background-color: #' . $fcolor . '; color: ' . $color . '; font-weight: bold;">' . $label . '</span>';
+            $color = ContentClothing::getContrastColor($fcolor);
+            return '<div style="width: 2em; height: 1em; margin-right: 1em; display: inline-block; background-color: #' . $fcolor . '; border: 1px solid ' . $color . ';"></div>' . $color . ';">' . $label;
         }
 
         return $label;

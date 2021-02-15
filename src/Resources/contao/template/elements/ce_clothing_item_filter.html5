@@ -1,0 +1,85 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+    <?php if (count($this->categoryBreadcrumb) > 0): ?>
+        <nav class="categoryBreadcrumb">
+            <label for="ctrl_categoryBreadcrumb"><?php echo $GLOBALS['TL_LANG']['tl_content']['categoryBreadcrumb']; ?></label>
+            <ul id="ctrl_categoryBreadcrumb">
+                <?php foreach($this->categoryBreadcrumb as $i => $category): ?>
+                    <li class="<?php echo $i % 2 == 0 ? 'odd' : ' even'; ?><?php echo $i == 0 ? ' first' : ''; ?><?php echo $i == count($this->categoryBreadcrumb) - 1 ? ' last' : ''; ?>"><a href="<?php echo $category->href; ?>"><?php echo $category->title; ?></a></li>
+                <?php endforeach; ?>
+            </ul>
+        </nav>
+    <?php endif; ?>
+    <?php if (count($this->childCategories) > 0): ?>
+        <nav class="childCategories">
+            <label for="ctrl_childCategories"><?php echo $GLOBALS['TL_LANG']['tl_content']['childCategories']; ?></label>
+            <ul id="ctrl_childCategories">
+                <?php foreach($this->childCategories as $i => $category): ?>
+                    <li class="<?php echo $i % 2 == 0 ? 'odd' : ' even'; ?><?php echo $i == 0 ? ' first' : ''; ?><?php echo $i == count($this->childCategories) - 1 ? ' last' : ''; ?><?php echo $category->singleSRC ? ' image' : 'noimage'; ?>"><a href="<?php echo $category->href; ?>"><?php if ($category->singleSRC): ?>{{image::<?php echo $category->singleSRC->path ?><?php echo $this->imgParams; ?>}}<?php endif; ?><span><?php echo $category->title; ?></span></a></li>
+                <?php endforeach; ?>
+            </ul>
+        </nav>
+    <?php endif; ?>
+    <?php if (count($this->materials) > 0): ?>
+        <nav class="materials">
+            <label for="ctrl_materials"><?php echo $GLOBALS['TL_LANG']['tl_content']['materials']; ?></label>
+            <ul id="ctrl_materials">
+                <?php foreach($this->materials as $i => $material): ?>
+                    <li class="<?php echo $material->selected ? 'active ' : ''; ?><?php echo $i % 2 == 0 ? 'odd' : ' even'; ?><?php echo $i == 0 ? ' first' : ''; ?><?php echo $i == count($this->materials) - 1 ? ' last' : ''; ?><?php echo $material->singleSRC ? ' image' : 'noimage'; ?>"><a href="<?php echo $material->href; ?>"><?php if ($material->singleSRC): ?>{{image::<?php echo $category->singleSRC->path ?><?php echo $this->imgParams; ?>}}<?php endif; ?><span><?php echo $material->title; ?></span></a></li>
+                <?php endforeach; ?>
+            </ul>
+        </nav>
+    <?php endif; ?>
+    <?php if (count($this->colors) > 0): ?>
+        <nav class="colors">
+            <label for="ctrl_colors"><?php echo $GLOBALS['TL_LANG']['tl_content']['colors']; ?></label>
+            <ul id="ctrl_materials">
+                <?php foreach($this->colors as $i => $color): ?>
+                    <li class="<?php echo $color->selected ? 'active ' : ''; ?><?php echo $i % 2 == 0 ? 'odd' : ' even'; ?><?php echo $i == 0 ? ' first' : ''; ?><?php echo $i == count($this->colors) - 1 ? ' last' : ''; ?>" style="color: <?php echo $color->bgcolor; ?>; background-color: <?php echo $color->fgcolor; ?>"><a href="<?php echo $color->href; ?>"><?php echo $color->title; ?></a></li>
+                <?php endforeach; ?>
+            </ul>
+        </nav>
+    <?php endif; ?>
+    <div class="formContainer">
+        <form action="" method="post">
+            <input type="hidden" name="FORM_SUBMIT" value="CLOTHING_CATALOG_FILTER" />
+            <input type="hidden" name="REQUEST_TOKEN" value="<?= REQUEST_TOKEN ?>" />
+            <?php if (count($this->categories) > 0): ?>
+                <fieldset class="categories">
+                    <legend><?php echo $GLOBALS['TL_LANG']['tl_content']['categories']; ?></legend>
+                    <label for="ctrl_categories"><?php echo $GLOBALS['TL_LANG']['tl_content']['categories']; ?></label>
+                    <select id="ctrl_categories">
+                        <?php foreach($this->categories as $category): ?>
+                            <option<?php echo $category->selected ? ' selected>' : ''; ?> value="<?php echo $category->id; ?>"><?php echo str_repeat('&nbsp; ', $category->level) . $category->title; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </fieldset>
+            <?php endif; ?>
+            <?php if (count($this->materials) > 0): ?>
+                <fieldset class="materials">
+                    <legend><?php echo $GLOBALS['TL_LANG']['tl_content']['materials']; ?></legend>
+                    <label for="ctrl_materials"><?php echo $GLOBALS['TL_LANG']['tl_content']['materials']; ?></label>
+                    <select id="ctrl_materials">
+                        <?php foreach($this->materials as $material): ?>
+                            <option<?php echo $material->selected ? ' selected>' : ''; ?> value="<?php echo $material->id; ?>"><?php echo $material->title ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </fieldset>
+            <?php endif; ?>
+            <?php if (count($this->colors) > 0): ?>
+                <fieldset class="colors">
+                    <legend><?php echo $GLOBALS['TL_LANG']['tl_content']['colors']; ?></legend>
+                    <label for="ctrl_colors"><?php echo $GLOBALS['TL_LANG']['tl_content']['colors']; ?></label>
+                    <select id="ctrl_colors">
+                        <?php foreach($this->colors as $color): ?>
+                            <option<?php echo $color->selected ? ' selected>' : ''; ?> value="<?php echo $color->id; ?>"><?php echo $color->title ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </fieldset>
+            <?php endif; ?>
+        </form>
+    </div>
+
+<?php $this->endblock(); ?>

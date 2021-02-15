@@ -12,5 +12,18 @@
 /**
  * Miscellaneous
  */
-$GLOBALS['TL_LANG']['MSC']['toggleMobile'] = ['Mobile Version', 'Zur mobilen Version wechseln'];
-$GLOBALS['TL_LANG']['MSC']['toggleDesktop'] = ['Desktop Version', 'Zur desktop Version wechseln'];
+
+$GLOBALS['TL_LANG']['MSC']['clothing_properties'] = array(
+    'category' => 'unter',
+    'color' => 'in',
+    'material' => 'aus'
+);
+
+/**
+ * ContentElements
+ */
+
+$GLOBALS['TL_LANG']['CTE']['clothing_catalog'] = array('Kleidungskatalog');
+$GLOBALS['TL_LANG']['CTE']['clothing_catalog_filter'] = array('Filter für Kleidungskatalog');
+$GLOBALS['TL_LANG']['CTE']['clothing_catalog_list'] = array('Kleiderliste');
+$GLOBALS['TL_LANG']['CTE']['clothing_catalog_details'] = array('Kleidungsstücks-Details');

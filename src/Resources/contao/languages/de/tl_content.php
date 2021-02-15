@@ -10,9 +10,20 @@
  */
 
 /**
+ * Legends
+ */
+
+$GLOBALS['TL_LANG']['tl_content']['appearance_legend'] = 'Darstellung';
+
+/**
  * Fields
  */
-$GLOBALS['TL_LANG']['tl_content']['mobileImage'] = ['Anderes Bild für Mobilgeräte', 'Hier können Sie ein anderes Bild für Mobilgeräte verwenden.'];
-$GLOBALS['TL_LANG']['tl_content']['mobileImageSrc'] = ['Quelldatei des mobilen Bildes', 'Bitte wählen Sie die Datei des mobilen Bildes.'];
-$GLOBALS['TL_LANG']['tl_content']['mobileImageCustomSize'] = ['Andere Bildgröße', 'Hier können Sie eine andere Bildgröße für das mobile Bild festlegen. Wenn nicht ausgewählt, dann wird die Bildgrößeneinstellung des normalen Bildes verwendet.'];
-$GLOBALS['TL_LANG']['tl_content']['mobileImageSize'] = ['Bildgröße des mobilen Bildes', 'Hier können Sie die Größe des mobilen Bildes festlegen.'];
+
+$GLOBALS['TL_LANG']['tl_content']['clothingDetailPage'] = array('Detailsseite', 'Bitte wählen Sie die Zielseite aus.');
+
+/**
+ * Miscellaneous
+ */
+
+$GLOBALS['TL_LANG']['tl_content']['categoryBreadcrumb'] = 'Aktuelle Kategorie';
+$GLOBALS['TL_LANG']['tl_content']['childCategories'] = 'Unterkategorien';

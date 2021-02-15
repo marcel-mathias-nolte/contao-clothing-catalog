@@ -11,7 +11,7 @@
 
 namespace MarcelMathiasNolte\ContaoClothingCatalogBundle\Elements;
 
-class ContentClothingItemList extends ContentClothingItem {
+class ContentClothingList extends ContentClothing {
 
     protected $strTemplate = 'ce_clothing_item_list';
     protected $strListTemplate = 'ce_clothing_item_list_item';
