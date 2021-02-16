@@ -31,7 +31,7 @@ abstract class ContentClothing extends \ContentElement {
     /**
      * Compile the content element
      */
-    public function generate(): \ContentElement
+    public function generate(): string
     {
         if (!self::$autoItemParsed) {
             \Input::setGet($GLOBALS['TL_LANG']['MSC']['clothing_properties']['category'], \Input::get($GLOBALS['TL_LANG']['MSC']['clothing_properties']['category']));

@@ -20,10 +20,18 @@ class ContentClothingFilter extends ContentClothing {
 
     protected $strTemplate = 'ce_clothing_item_filter';
 
-    public function generate() : \ContentElement {
+    public function generate() : string {
         if (TL_MODE == 'BE')
         {
             $this->strTemplate = 'be_wildcard';
+            /** @var \BackendTemplate|object $objTemplate */
+            $objTemplate = new \BackendTemplate('be_wildcard');
+
+            $objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['CTE']['clothing_catalog_filter'][0]) . ' ###';
+            $objTemplate->title = $this->headline;
+            $objTemplate->id = $this->id;
+
+            return $objTemplate->parse();
         }
 
         return parent::generate();
@@ -34,12 +42,6 @@ class ContentClothingFilter extends ContentClothing {
      */
     protected function compile()
     {
-        if (TL_MODE == 'BE') {
-            $this->Template->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['CTE']['clothing_catalog_filter'][0]) . ' ###';
-            $this->Template->title = $this->headline;
-            $this->Template->id = $this->id;
-            return;
-        }
         global $objPage;
 
         $arrColors = array();
