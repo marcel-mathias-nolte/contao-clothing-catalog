@@ -145,7 +145,7 @@ class ContentClothingFilter extends ContentClothing {
      */
     protected function renderCategoryTree(int $intPid, array &$arrItems, int $intLevel = 0) {
         global $objPage;
-        $objCategories = ClothingCategoryModel::findAllByPid($intPid, ['order' => 'sorting ASC']);
+        $objCategories = ClothingCategoryModel::findByPid($intPid, ['order' => 'sorting ASC']);
         if ($objCategories != null) {
             foreach ($objCategories as $objCategory) {
                 $color = deserialize($objCategory->color);
