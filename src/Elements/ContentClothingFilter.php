@@ -34,6 +34,11 @@ class ContentClothingFilter extends ContentClothing {
             return $objTemplate->parse();
         }
 
+        $strCssFile = 'bundles/contaoclothingcatalog/css/frontend.scss|static';
+        if (!in_array($strCssFile, $GLOBALS['TL_CSS'])) {
+            $GLOBALS['TL_CSS'][] = $strCssFile;
+        }
+
         return parent::generate();
     }
 
@@ -42,11 +47,6 @@ class ContentClothingFilter extends ContentClothing {
      */
     protected function compile()
     {
-        $strCssFile = 'bundles/contaoclothingcatalog/css/frontend.scss|static';
-        if (!in_array($strCssFile, $GLOBALS['TL_CSS'])) {
-            $GLOBALS['TL_CSS'][] = $strCssFile;
-        }
-
         global $objPage;
 
         $arrColors = array();
