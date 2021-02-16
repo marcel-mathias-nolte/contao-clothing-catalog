@@ -18,6 +18,7 @@ namespace MarcelMathiasNolte\ContaoClothingCatalogBundle;
 $GLOBALS['TL_MODELS']['tl_clothing_categories'] = Models\ClothingCategoryModel::class;
 $GLOBALS['TL_MODELS']['tl_clothing_colors'] = Models\ClothingColorModel::class;
 $GLOBALS['TL_MODELS']['tl_clothing_materials'] = Models\ClothingMaterialModel::class;
+$GLOBALS['TL_MODELS']['tl_clothing_items'] = Models\ClothingItemModel::class;
 
 /**
  * Content Elements
