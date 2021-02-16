@@ -82,7 +82,7 @@ class ContentClothingFilter extends ContentClothing {
 
         $arrChildCategories = array();
         if (parent::$intCategory) {
-            $objCategories = ClothingCategoryModel::findAllByPid(parent::$intCategory, ['order' => 'sorting ASC']);
+            $objCategories = ClothingCategoryModel::findByPid(parent::$intCategory, ['order' => 'sorting ASC']);
             if ($objCategories != null) {
                 foreach ($objCategories as $objCategory) {
                     $color = deserialize($objCategory->color);
