@@ -4,7 +4,7 @@
 
     <?php if (count($this->categoryBreadcrumb) > 0): ?>
         <nav class="categoryBreadcrumb">
-            <label for="ctrl_categoryBreadcrumb"><?php echo $GLOBALS['TL_LANG']['tl_content']['categoryBreadcrumb']; ?></label>
+            <label for="ctrl_categoryBreadcrumb"><?php echo $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['categoryBreadcrumb']; ?></label>
             <ul id="ctrl_categoryBreadcrumb">
                 <?php foreach($this->categoryBreadcrumb as $i => $category): ?>
                     <li class="<?php echo $i % 2 == 0 ? 'odd' : ' even'; ?><?php echo $i == 0 ? ' first' : ''; ?><?php echo $i == count($this->categoryBreadcrumb) - 1 ? ' last' : ''; ?>"><a href="<?php echo $category->href; ?>"><?php echo $category->title; ?></a></li>
@@ -14,7 +14,7 @@
     <?php endif; ?>
     <?php if (count($this->childCategories) > 0): ?>
         <nav class="childCategories">
-            <label for="ctrl_childCategories"><?php echo $GLOBALS['TL_LANG']['tl_content']['childCategories']; ?></label>
+            <label for="ctrl_childCategories"><?php echo $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['childCategories']; ?></label>
             <ul id="ctrl_childCategories">
                 <?php foreach($this->childCategories as $i => $category): ?>
                     <li class="<?php echo $i % 2 == 0 ? 'odd' : ' even'; ?><?php echo $i == 0 ? ' first' : ''; ?><?php echo $i == count($this->childCategories) - 1 ? ' last' : ''; ?><?php echo $category->singleSRC ? ' image' : 'noimage'; ?>"><a href="<?php echo $category->href; ?>"><?php if ($category->singleSRC): ?>{{image::<?php echo $category->singleSRC->path ?><?php echo $this->imgParams; ?>}}<?php endif; ?><span><?php echo $category->title; ?></span></a></li>
@@ -24,7 +24,7 @@
     <?php endif; ?>
     <?php if (count($this->materials) > 0): ?>
         <nav class="materials">
-            <label for="ctrl_materials"><?php echo $GLOBALS['TL_LANG']['tl_content']['materials']; ?></label>
+            <label for="ctrl_materials"><?php echo $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['materials']; ?></label>
             <ul id="ctrl_materials">
                 <?php foreach($this->materials as $i => $material): ?>
                     <li class="<?php echo $material->selected ? 'active ' : ''; ?><?php echo $i % 2 == 0 ? 'odd' : ' even'; ?><?php echo $i == 0 ? ' first' : ''; ?><?php echo $i == count($this->materials) - 1 ? ' last' : ''; ?><?php echo $material->singleSRC ? ' image' : 'noimage'; ?>"><a href="<?php echo $material->href; ?>"><?php if ($material->singleSRC): ?>{{image::<?php echo $category->singleSRC->path ?><?php echo $this->imgParams; ?>}}<?php endif; ?><span><?php echo $material->title; ?></span></a></li>
@@ -34,7 +34,7 @@
     <?php endif; ?>
     <?php if (count($this->colors) > 0): ?>
         <nav class="colors">
-            <label for="ctrl_colors"><?php echo $GLOBALS['TL_LANG']['tl_content']['colors']; ?></label>
+            <label for="ctrl_colors"><?php echo $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['colors']; ?></label>
             <ul id="ctrl_materials">
                 <?php foreach($this->colors as $i => $color): ?>
                     <li class="<?php echo $color->selected ? 'active ' : ''; ?><?php echo $i % 2 == 0 ? 'odd' : ' even'; ?><?php echo $i == 0 ? ' first' : ''; ?><?php echo $i == count($this->colors) - 1 ? ' last' : ''; ?>" style="color: <?php echo $color->bgcolor; ?>; background-color: <?php echo $color->fgcolor; ?>"><a href="<?php echo $color->href; ?>"><?php echo $color->title; ?></a></li>

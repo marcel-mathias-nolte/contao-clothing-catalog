@@ -14,6 +14,7 @@ namespace MarcelMathiasNolte\ContaoClothingCatalogBundle\Elements;
 use Contao\ContentElement;
 use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingCategoryModel;
 use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingColorModel;
+use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingItemModel;
 use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingMaterialModel;
 
 class ContentClothingFilter extends ContentClothing {
@@ -49,7 +50,15 @@ class ContentClothingFilter extends ContentClothing {
     {
         global $objPage;
 
-        $arrColors = array();
+        $arrColors = array(
+            array(
+                'title' => $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['all_colors'],
+                'color' => false,
+                'selected' => !parent::$intColor,
+                'href' => $this->generateFrontendUrl($objPage->row(), (parent::$intCategory > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . parent::$strCategory : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . parent::$strMaterial : '')),
+                'resultCount' => count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(parent::$intCategory, 0, parent::$intMaterial))
+           )
+        );
         $objColors = ClothingColorModel::findAll(['order' => 'title ASC']);
         if ($objColors != null) {
             foreach ($objColors as $objColor) {
@@ -58,14 +67,24 @@ class ContentClothingFilter extends ContentClothing {
                 $arrData['color'] = $color;
                 $arrData['fgcolor'] = '#' . $color[0];
                 $arrData['selected'] = $objColor->id == parent::$intColor;
-                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), (parent::$intCategory > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['category'] . '/' . parent::$strCategory : '') . '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['color'] . '/' . $objColor->alias . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['material'] . '/' . parent::$strMaterial : ''));
+                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), (parent::$intCategory > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . parent::$strCategory : '') . '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . $objColor->alias . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . parent::$strMaterial : ''));
                 $arrData['bgcolor'] = parent::getContrastColor($arrData['fgcolor']);
+				$arrData['resultCount'] = count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(parent::$intCategory, $objColor->id, parent::$intMaterial));
                 $arrColors[] = (object)$arrData;
             }
         }
         $this->Template->colors = $arrColors;
 
-        $arrMaterials = array();
+        $arrMaterials = array(
+            array(
+                'title' => $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['all_materials'],
+                'color' => false,
+                'singleSRC' => false,
+                'selected' => !parent::$intMaterial,
+                'href' => $this->generateFrontendUrl($objPage->row(), (parent::$intCategory > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . parent::$strCategory : '') . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . parent::$strColor : '')),
+                'resultCount' => count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(0, parent::$intColor, parent::$intMaterial))
+            )
+        );
         $objMaterials = ClothingMaterialModel::findAll(['order' => 'title ASC']);
         if ($objMaterials != null) {
             foreach ($objMaterials as $objMaterial) {
@@ -75,7 +94,8 @@ class ContentClothingFilter extends ContentClothing {
                 $objFile = \FilesModel::findByUuid($arrData['singleSRC']);
                 $arrData['singleSRC'] = $objFile != null ? (object)$objFile->row() : false;
                 $arrData['selected'] = $objMaterial->id == parent::$intMaterial;
-                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), (parent::$intCategory > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['category'] . '/' . parent::$strCategory : '') . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['color'] . '/' . parent::$strColor : '') . '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['material'] . '/' . $objMaterial->alias);
+                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), (parent::$intCategory > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . parent::$strCategory : '') . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . parent::$strColor : '') . '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . $objMaterial->alias);
+                $arrData['resultCount'] = count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(parent::$intCategory, parent::$intColor, $objMaterial->id));
                 $arrMaterials[] = (object)$arrData;
             }
         }
@@ -94,7 +114,8 @@ class ContentClothingFilter extends ContentClothing {
                 $arrData['color'] = $color;
                 $objFile = \FilesModel::findByUuid($arrData['singleSRC']);
                 $arrData['singleSRC'] = $objFile != null ? (object)$objFile->row() : false;
-                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['category'] . '/' . $objCategory->alias . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['color'] . '/' . parent::$strColor : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['material'] . '/' . parent::$strMaterial : ''));
+                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . $objCategory->alias . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . parent::$strColor : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . parent::$strMaterial : ''));
+                $arrData['resultCount'] = count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(parent::$intCategory, $objColor->id, parent::$intMaterial));
                 $arrChildCategories[] = (object)$arrData;
             }
         }
@@ -102,6 +123,13 @@ class ContentClothingFilter extends ContentClothing {
 
         $arrCategoryBreadCrumb = array();
         if (parent::$intCategory) {
+            $arrData = array(
+				'title' => $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['all_categories'],
+				'singleSRC' => false,
+				'href' => $this->generateFrontendUrl($objPage->row(), (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . parent::$strColor : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . parent::$strMaterial : '')),
+                'resultCount' => count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(0, parent::$intColor, parent::$intMaterial))
+			);
+            $arrCategoryBreadCrumb[] = (object)$arrData;
             $intId = parent::$intCategory;
             while ($intId && $objCategory = ClothingCategoryModel::findByPk($intId)) {
                 $color = deserialize($objCategory->color);
@@ -109,12 +137,12 @@ class ContentClothingFilter extends ContentClothing {
                 $arrData['color'] = $color;
                 $objFile = \FilesModel::findByUuid($arrData['singleSRC']);
                 $arrData['singleSRC'] = $objFile != null ? (object)$objFile->row() : false;
-                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['category'] . '/' . $objCategory->alias . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['color'] . '/' . parent::$strColor : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['material'] . '/' . parent::$strMaterial : ''));
+                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . $objCategory->alias . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . parent::$strColor : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . parent::$strMaterial : ''));
+                $arrData['resultCount'] = count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor($objCategory->id, parent::$intColor, parent::$intMaterial));
                 $arrCategoryBreadCrumb[] = (object)$arrData;
                 $intId = $objCategory->pid;
             }
         }
-        array_reverse($arrCategoryBreadCrumb);
         $this->Template->categoryBreadcrumb = $arrCategoryBreadCrumb;
 
         $this->Template->resultCount = count(parent::$arrMatchedItems);
@@ -158,7 +186,8 @@ class ContentClothingFilter extends ContentClothing {
                 $arrData['singleSRC'] = $objFile != null ? (object)$objFile->row() : false;
                 $arrData['selected'] = $objCategory->id == parent::$intCategory;
                 $arrData['level'] = $intLevel;
-                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['category'] . '/' . $objCategory->alias . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['color'] . '/' . parent::$strColor : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['material'] . '/' . parent::$strMaterial : ''));
+                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . $objCategory->alias . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . parent::$strColor : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . parent::$strMaterial : ''));
+                $arrData['resultCount'] = count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor($objCategory->id, parent::$intColor, parent::$intMaterial));
                 $arrItems[] = (object)$arrData;
                 $this->renderCategoryTree($objCategory->id, $arrItems, $intLevel + 1);
             }

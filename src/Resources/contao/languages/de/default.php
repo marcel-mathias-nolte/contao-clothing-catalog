@@ -13,11 +13,19 @@
  * Miscellaneous
  */
 
-$GLOBALS['TL_LANG']['MSC']['clothing_properties'] = array(
+$GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties'] = array(
     'category' => 'unter',
     'color' => 'in',
     'material' => 'aus'
 );
+$GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['categoryBreadcrumb'] = 'Aktuelle Kategorie';
+$GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['childCategories'] = 'Unterkategorien';
+$GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['materials'] = 'Materialen';
+$GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['colors'] = 'Farben';
+$GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['categories'] = 'Kategorien';
+$GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['all_categories'] = 'Alle Kategorien';
+$GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['all_colors'] = 'Alle Farben';
+$GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['all_materials'] = 'Alle Materialien';
 
 /**
  * ContentElements

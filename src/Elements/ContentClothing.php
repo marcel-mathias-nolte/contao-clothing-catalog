@@ -33,13 +33,13 @@ abstract class ContentClothing extends \ContentElement {
     public function generate(): string
     {
         if (!self::$autoItemParsed) {
-            \Input::setGet($GLOBALS['TL_LANG']['MSC']['clothing_properties']['category'], \Input::get($GLOBALS['TL_LANG']['MSC']['clothing_properties']['category']));
-            \Input::setGet($GLOBALS['TL_LANG']['MSC']['clothing_properties']['color'], \Input::get($GLOBALS['TL_LANG']['MSC']['clothing_properties']['color']));
-            \Input::setGet($GLOBALS['TL_LANG']['MSC']['clothing_properties']['material'], \Input::get($GLOBALS['TL_LANG']['MSC']['clothing_properties']['material']));
+            \Input::setGet($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'], \Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category']));
+            \Input::setGet($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'], \Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color']));
+            \Input::setGet($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'], \Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material']));
 
-            self::$strCategory = \Input::get($GLOBALS['TL_LANG']['MSC']['clothing_properties']['category']);
-            self::$strColor = \Input::get($GLOBALS['TL_LANG']['MSC']['clothing_properties']['color']);
-            self::$strMaterial = \Input::get($GLOBALS['TL_LANG']['MSC']['clothing_properties']['material']);
+            self::$strCategory = \Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category']);
+            self::$strColor = \Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color']);
+            self::$strMaterial = \Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material']);
 
             $objCategory = ClothingCategoryModel::findByAlias(self::$strCategory);
             if ($objCategory != null) {
