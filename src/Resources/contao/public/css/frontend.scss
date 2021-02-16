@@ -1,3 +1,31 @@
 .ce_clothing_catalog_filter {
-
+  form {
+    display: none;
+  }
+  nav {
+    label {
+      display: block;
+      font-family: Raleway, sans-serif;
+      text-decoration: underline;
+      margin: 0.5em 0;
+    }
+    li {
+      margin-right: 0;
+    }
+    &.colors {
+      li {
+        border: 0;
+        padding: 0.5em;
+        margin: 2px;
+        a {
+          color: inherit;
+        }
+        &.active {
+          font-weight: bold;
+          border: 2px solid #000;
+          margin: 0;
+        }
+      }
+    }
+  }
 }

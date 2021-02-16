@@ -52,7 +52,7 @@
                     <label for="ctrl_categories"><?php echo $GLOBALS['TL_LANG']['tl_content']['categories']; ?></label>
                     <select id="ctrl_categories">
                         <?php foreach($this->categories as $category): ?>
-                            <option<?php echo $category->selected ? ' selected>' : ''; ?> value="<?php echo $category->id; ?>"><?php echo str_repeat('&nbsp; ', $category->level) . $category->title; ?></option>
+                            <option<?php echo $category->selected ? ' selected' : ''; ?> value="<?php echo $category->id; ?>"><?php echo str_repeat('&nbsp; ', $category->level) . $category->title; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </fieldset>
@@ -63,7 +63,7 @@
                     <label for="ctrl_materials"><?php echo $GLOBALS['TL_LANG']['tl_content']['materials']; ?></label>
                     <select id="ctrl_materials">
                         <?php foreach($this->materials as $material): ?>
-                            <option<?php echo $material->selected ? ' selected>' : ''; ?> value="<?php echo $material->id; ?>"><?php echo $material->title ?></option>
+                            <option<?php echo $material->selected ? ' selected' : ''; ?> value="<?php echo $material->id; ?>"><?php echo $material->title ?></option>
                         <?php endforeach; ?>
                     </select>
                 </fieldset>
@@ -74,7 +74,7 @@
                     <label for="ctrl_colors"><?php echo $GLOBALS['TL_LANG']['tl_content']['colors']; ?></label>
                     <select id="ctrl_colors">
                         <?php foreach($this->colors as $color): ?>
-                            <option<?php echo $color->selected ? ' selected>' : ''; ?> value="<?php echo $color->id; ?>"><?php echo $color->title ?></option>
+                            <option<?php echo $color->selected ? ' selected' : ''; ?> value="<?php echo $color->id; ?>"><?php echo $color->title ?></option>
                         <?php endforeach; ?>
                     </select>
                 </fieldset>

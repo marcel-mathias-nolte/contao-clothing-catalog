@@ -27,3 +27,5 @@ $GLOBALS['TL_LANG']['tl_content']['clothingDetailPage'] = array('Detailsseite', 
 
 $GLOBALS['TL_LANG']['tl_content']['categoryBreadcrumb'] = 'Aktuelle Kategorie';
 $GLOBALS['TL_LANG']['tl_content']['childCategories'] = 'Unterkategorien';
+$GLOBALS['TL_LANG']['tl_content']['materials'] = 'Materialen';
+$GLOBALS['TL_LANG']['tl_content']['colors'] = 'Farben';
