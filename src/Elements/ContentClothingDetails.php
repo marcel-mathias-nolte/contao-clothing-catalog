@@ -22,6 +22,10 @@ class ContentClothingDetails extends ContentElement {
      */
     protected function compile()
     {
+        $strCssFile = 'bundles/contaoclothingcatalog/css/frontend.scss|static';
+        if (!in_array($strCssFile, $GLOBALS['TL_CSS'])) {
+            $GLOBALS['TL_CSS'][] = $strCssFile;
+        }
         // TODO: Implement compile() method.
     }
 }

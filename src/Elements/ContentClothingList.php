@@ -21,6 +21,11 @@ class ContentClothingList extends ContentClothing {
      */
     protected function compile()
     {
+        $strCssFile = 'bundles/contaoclothingcatalog/css/frontend.scss|static';
+        if (!in_array($strCssFile, $GLOBALS['TL_CSS'])) {
+            $GLOBALS['TL_CSS'][] = $strCssFile;
+        }
+
         // TODO: Implement compile() method.
     }
 }

@@ -135,7 +135,7 @@ class ClothingItemModel extends Model
      * @param integer $intMaterial material ID
      * @param array   $arrOptions  An optional options array
      *
-     * @return Collection|ClothingItemModel[]|null The model or null if there is no item
+     * @return array The model or null if there is no item
      */
     public static function findPublishedByCategoryAndMaterialAndColor($intCategory, $intColor, $intMaterial, array $arrOptions=array())
     {
@@ -166,8 +166,15 @@ class ClothingItemModel extends Model
             $time = Date::floorToMinute();
             $arrColumns[] = "$t.published='1'";
         }
+        $arrResults = array();
+        $objResult = static::findBy($arrColumns, $arrValues, $arrOptions);
+        if ($objResult != null) {
+            foreach ($objResult as $objRecord) {
+                $arrResults[] = (object)$objRecord->row();
+            }
+        }
 
-        return static::findBy($arrColumns, $arrValues, $arrOptions);
+        return $arrResults;
     }
 
     /**
