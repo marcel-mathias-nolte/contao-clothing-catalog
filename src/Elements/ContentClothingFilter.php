@@ -20,7 +20,7 @@ class ContentClothingFilter extends ContentClothing {
 
     protected $strTemplate = 'ce_clothing_item_filter';
 
-    public function generate() : ContentElement {
+    public function generate() {
         if (TL_MODE == 'BE')
         {
             /** @var \BackendTemplate|object $objTemplate */
