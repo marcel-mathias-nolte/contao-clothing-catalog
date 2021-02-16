@@ -107,9 +107,11 @@ class ClothingCategoryModel extends Model
         while (count($arrToDo) > 0)
         {
             $objCategories = static::findByPid(array_pop($arrToDo));
-            while ($objCategories->next()) {
-                $arrToDo[] = $objCategories->id;
-                $arrIds[] = $objCategories->id;
+            if ($objCategories != null) {
+                foreach ($objCategories as $objCategory) {
+                    $arrToDo[] = $objCategory->id;
+                    $arrIds[] = $objCategory->id;
+                }
             }
         }
 

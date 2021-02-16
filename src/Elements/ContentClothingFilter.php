@@ -81,18 +81,16 @@ class ContentClothingFilter extends ContentClothing {
         $this->Template->categories = $arrCategories;
 
         $arrChildCategories = array();
-        if (parent::$intCategory) {
-            $objCategories = ClothingCategoryModel::findByPid(parent::$intCategory, ['order' => 'sorting ASC']);
-            if ($objCategories != null) {
-                foreach ($objCategories as $objCategory) {
-                    $color = deserialize($objCategory->color);
-                    $arrData = $objCategory->row();
-                    $arrData['color'] = $color;
-                    $objFile = \FilesModel::findByUuid($arrData['singleSRC']);
-                    $arrData['singleSRC'] = $objFile != null ? (object)$objFile->row() : false;
-                    $arrData['href'] = $this->generateFrontendUrl($objPage->row(), '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['category'] . '/' . $objCategory->alias . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['color'] . '/' . parent::$strColor : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['material'] . '/' . parent::$strMaterial : ''));
-                    $arrChildCategories[] = (object)$arrData;
-                }
+        $objCategories = ClothingCategoryModel::findByPid(parent::$intCategory ?? 0, ['order' => 'sorting ASC']);
+        if ($objCategories != null) {
+            foreach ($objCategories as $objCategory) {
+                $color = deserialize($objCategory->color);
+                $arrData = $objCategory->row();
+                $arrData['color'] = $color;
+                $objFile = \FilesModel::findByUuid($arrData['singleSRC']);
+                $arrData['singleSRC'] = $objFile != null ? (object)$objFile->row() : false;
+                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['category'] . '/' . $objCategory->alias . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['color'] . '/' . parent::$strColor : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['clothing_properties']['material'] . '/' . parent::$strMaterial : ''));
+                $arrChildCategories[] = (object)$arrData;
             }
         }
         $this->Template->childCategories = $arrChildCategories;

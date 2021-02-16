@@ -27,7 +27,6 @@ abstract class ContentClothing extends \ContentElement {
     public static $intMaterial;
     public static $arrMatchedItems;
 
-
     /**
      * Compile the content element
      */
@@ -44,17 +43,17 @@ abstract class ContentClothing extends \ContentElement {
 
             $objCategory = ClothingCategoryModel::findByAlias(self::$strCategory);
             if ($objCategory != null) {
-                self::$intCategory = $objCategory->id;
+                self::$intCategory = (int)$objCategory->id;
             }
 
-            $objColor = ClothingColorModel::findByAlias(self::$strCategory);
+            $objColor = ClothingColorModel::findByAlias(self::$strColor);
             if ($objColor != null) {
-                self::$intColor = $objColor->id;
+                self::$intColor = (int)$objColor->id;
             }
 
-            $objMaterial = ClothingMaterialModel::findByAlias(self::$strCategory);
+            $objMaterial = ClothingMaterialModel::findByAlias(self::$strMaterial);
             if ($objMaterial != null) {
-                self::$intMaterial = $objMaterial->id;
+                self::$intMaterial = (int)$objMaterial->id;
             }
 
             self::$arrMatchedItems = ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(self::$intCategory, self::$intMaterial, self::$intColor);
