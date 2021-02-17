@@ -18,7 +18,8 @@
         "contao/news-bundle": "^4.4",
         "contao/calendar-bundle": "^4.4",
         "contao-community-alliance/composer-plugin":"~2.4 || ~3.0",
-        "codefog/contao-haste":"^4.17"
+        "codefog/contao-haste":"^4.17",
+        "menatwork/contao-multicolumnwizard":"^4.17"
     },
     "conflict": {
         "contao/core": "*",

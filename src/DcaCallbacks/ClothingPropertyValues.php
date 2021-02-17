@@ -12,7 +12,7 @@
 namespace MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks;
 
 use Backend;
-use ClothingMaterialModel;
+use ClothingPropertyValueModel;
 use DataContainer;
 use Exception;
 use Image;
@@ -29,11 +29,11 @@ use function in_array;
  *
  * @author  Marcel Mathias Nolte
  */
-class ClothingMaterials extends Backend
+class ClothingPropertyValues extends Backend
 {
 
-    private $strAliasPrefix = 'material-';
-    private $strTableName = 'tl_clothing_materials';
+    private $strAliasPrefix = 'property-';
+    private $strTableName = 'tl_clothing_property_values';
 
     /**
      * Auto-generate an alias if it has not been set yet
@@ -100,23 +100,17 @@ class ClothingMaterials extends Backend
     }
 
     /**
-     * Generate the list label
+     * Add the type of input field
      *
-     * @param $row
-     * @param $label
-     * @return var
+     * @param array $arrRow
+     *
+     * @return string
      */
-    public function generateLabel($row, $label){
-        if (trim($row['singleSRC']) != '') {
-            $objFile = \FilesModel::findByUuid($row['singleSRC']);
-            if ($objFile != null) {
-                return '<div style="background-image: url(\'' . $objFile->path . '\'); background-size: cover; background-position: center center; width: 100px; height: 100px; float: left;"></div><div style="margin-left: 120px;">' . $label . '</div><div style="clear: both;"></div>';
-            }
-        }
-
-        return '<div style="width: 100px; height: 100px; float: left;"></div><div style="margin-left: 120px;">' . $label . '</div><div style="clear: both;"></div>';
+    public function listPropertyValues($arrRow)
+    {
+        return $arrRow['title'];
     }
-
+    
     /**
      * Automatically generate the aliases
      *
@@ -139,15 +133,15 @@ class ClothingMaterials extends Backend
 
             foreach ($ids as $id)
             {
-                $objClothingMaterial = ClothingMaterialModel::findWithDetails($id);
+                $objClothingPropertyValue = ClothingPropertyValueModel::findWithDetails($id);
 
-                if ($objClothingMaterial === null)
+                if ($objClothingPropertyValue === null)
                 {
                     continue;
                 }
 
                 $dc->id = $id;
-                $dc->activeRecord = $objClothingMaterial;
+                $dc->activeRecord = $objClothingPropertyValue;
 
                 $strAlias = '';
 
@@ -169,13 +163,13 @@ class ClothingMaterials extends Backend
                 }
 
                 // The alias has not changed
-                if ($strAlias == $objClothingMaterial->alias)
+                if ($strAlias == $objClothingPropertyValue->alias)
                 {
                     continue;
                 }
 
                 // Initialize the version manager
-                $objVersions = new Versions('tl_clothing_materials', $id);
+                $objVersions = new Versions($this->strTableName, $id);
                 $objVersions->initialize();
 
                 // Store the new alias

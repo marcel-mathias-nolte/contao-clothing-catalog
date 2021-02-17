@@ -17,6 +17,7 @@ use DataContainer;
 use Exception;
 use Image;
 use Input;
+use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingPropertyModel;
 use PageModel;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use StringUtil;
@@ -176,7 +177,7 @@ class ClothingItems extends Backend
                 }
 
                 // Initialize the version manager
-                $objVersions = new Versions('tl_clothing_colors', $id);
+                $objVersions = new Versions($this->strTableName, $id);
                 $objVersions->initialize();
 
                 // Store the new alias
@@ -194,6 +195,32 @@ class ClothingItems extends Backend
         $arrButtons['alias'] = '<button type="submit" name="alias" id="alias" class="tl_submit" accesskey="a">' . $GLOBALS['TL_LANG']['MSC']['aliasSelected'] . '</button> ';
 
         return $arrButtons;
+    }
+
+    public function getProperties() {
+        $arrValues = array();
+        $objProperties = ClothingPropertyModel::findAllByType('checkbox', ['order' => 'title ASC']);
+        if ($objProperties != null) {
+            foreach ($objProperties as $objProperty) {
+                $arrValues[$objProperty->alias] = $objProperty->title;
+            }
+        }
+        return $arrValues;
+    }
+
+    public function getOptionValues() {
+        return array('a' => 'b');
+    }
+
+    public function getOptions() {
+        $arrValues = array();
+        $objProperties = ClothingPropertyModel::findAllByType('select', ['order' => 'title ASC']);
+        if ($objProperties != null) {
+            foreach ($objProperties as $objProperty) {
+                $arrValues[$objProperty->alias] = $objProperty->title;
+            }
+        }
+        return $arrValues;
     }
 
     /**

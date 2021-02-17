@@ -100,6 +100,24 @@ class ClothingCategories extends Backend
     }
 
     /**
+     * Generate the list label
+     *
+     * @param $row
+     * @param $label
+     * @return var
+     */
+    public function generateLabel($row, $label){
+        if (trim($row['singleSRC']) != '') {
+            $objFile = \FilesModel::findByUuid($row['singleSRC']);
+            if ($objFile != null) {
+                return '<div style="background-image: url(\'' . $objFile->path . '\'); background-size: contain; background-repeat: no-repeat; background-position: center center; width: 100px; height: 100px; float: right;"></div>' . $label . '';
+            }
+        }
+
+        return '<div style="width: 100px; height: 100px; float: right;"></div>' . $label . '';
+    }
+
+    /**
      * Return the paste category button
      *
      * @param DataContainer $dc
@@ -194,7 +212,7 @@ class ClothingCategories extends Backend
                 }
 
                 // Initialize the version manager
-                $objVersions = new Versions('tl_clothing_categories', $id);
+                $objVersions = new Versions($this->strTableName, $id);
                 $objVersions->initialize();
 
                 // Store the new alias

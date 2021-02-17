@@ -18,6 +18,7 @@ $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties'] = array(
     'color' => 'in',
     'material' => 'aus'
 );
+$GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['with_property'] = array('mit-', 'ja');
 $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['categoryBreadcrumb'] = 'Aktuelle Kategorie';
 $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['childCategories'] = 'Unterkategorien';
 $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['materials'] = 'Materialen';

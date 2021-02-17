@@ -177,7 +177,7 @@ class ClothingColors extends Backend
                 }
 
                 // Initialize the version manager
-                $objVersions = new Versions('tl_clothing_colors', $id);
+                $objVersions = new Versions($this->strTableName, $id);
                 $objVersions->initialize();
 
                 // Store the new alias

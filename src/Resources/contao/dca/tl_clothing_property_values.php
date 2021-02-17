@@ -9,19 +9,22 @@
  * @license LGPL
  */
 
-$GLOBALS['TL_DCA']['tl_clothing_materials'] = array
+$GLOBALS['TL_DCA']['tl_clothing_property_values'] = array
 (
     // Config
     'config' => array
     (
         'dataContainer'               => 'Table',
         'enableVersioning'            => true,
+        'ptable'                      => 'tl_clothing_properties',
+        'markAsCopy'                  => 'title',
         'sql' => array
         (
             'keys' => array
             (
                 'id' => 'primary',
-                'alias' => 'index'
+                'alias' => 'index',
+                'pid' => 'index'
             )
         )
     ),
@@ -31,16 +34,15 @@ $GLOBALS['TL_DCA']['tl_clothing_materials'] = array
     (
         'sorting' => array
         (
-            'mode'                    => 1,
-            'flag'                    => 11,
-            'fields'                  => array('title'),
+            'mode'                    => 4,
+            'fields'                  => array('sorting'),
             'panelLayout'             => 'search',
-            'disableGrouping'         => true
+            'headerFields'            => array('title', 'type'),
+            'child_record_callback'   => array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingPropertyValues', 'listPropertyValues')
         ),
         'label' => array
         (
-            'fields'                  => array('title'),
-            'label_callback'          => array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingMaterials', 'generateLabel')
+            'fields'                  => array('title')
         ),
         'global_operations' => array
         (
@@ -56,7 +58,19 @@ $GLOBALS['TL_DCA']['tl_clothing_materials'] = array
             'edit' => array
             (
                 'href'                => 'act=edit',
-                'icon'                => 'edit.svg',
+                'icon'                => 'edit.svg'
+            ),
+            'copy' => array
+            (
+                'href'                => 'act=paste&amp;mode=copy',
+                'icon'                => 'copy.svg',
+                'attributes'          => 'onclick="Backend.getScrollOffset()"'
+            ),
+            'cut' => array
+            (
+                'href'                => 'act=paste&amp;mode=cut',
+                'icon'                => 'cut.svg',
+                'attributes'          => 'onclick="Backend.getScrollOffset()"'
             ),
             'delete' => array
             (
@@ -77,14 +91,14 @@ $GLOBALS['TL_DCA']['tl_clothing_materials'] = array
     (
         'buttons_callback' => array
         (
-            array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingMaterials', 'addAliasButton')
+            array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingPropertyValues', 'addAliasButton')
         )
     ),
 
     // Palettes
     'palettes' => array
     (
-        'default' => '{title_legend},title,alias;{appearance_legend},singleSRC,color'
+        'default' => '{title_legend},title,alias,type'
     ),
 
     // Fields
@@ -95,6 +109,16 @@ $GLOBALS['TL_DCA']['tl_clothing_materials'] = array
             'label'                   => array('ID'),
             'search'                  => true,
             'sql'                     => "int(10) unsigned NOT NULL auto_increment"
+        ),
+        'pid' => array
+        (
+            'foreignKey'              => 'tl_clothing_properties.title',
+            'sql'                     => "int(10) unsigned NOT NULL default 0",
+            'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
+        ),
+        'sorting' => array
+        (
+            'sql'                     => "int(10) unsigned NOT NULL default 0"
         ),
         'tstamp' => array
         (
@@ -114,21 +138,9 @@ $GLOBALS['TL_DCA']['tl_clothing_materials'] = array
             'eval'                    => array('rgxp'=>'folderalias', 'doNotCopy'=>true, 'maxlength'=>255, 'tl_class'=>'w50 clr'),
             'save_callback' => array
             (
-                array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingMaterials', 'generateAlias')
+                array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingPropertyValues', 'generateAlias')
             ),
             'sql'                     => "varchar(255) BINARY NOT NULL default ''"
-        ),
-        'color' => array
-        (
-            'inputType'               => 'text',
-            'eval'                    => array('maxlength'=>6, 'multiple'=>true, 'size'=>2, 'colorpicker'=>true, 'isHexColor'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50 wizard'),
-            'sql'                     => "varchar(64) NOT NULL default ''"
-        ),
-        'singleSRC' => array
-        (
-            'inputType'               => 'fileTree',
-            'eval'                    => array('fieldType'=>'radio', 'files'=>true, 'filesOnly'=>true, 'tl_class'=>'clr', 'extensions'=>\Contao\Config::get('validImageTypes')),
-            'sql'                     => 'blob NULL'
         )
     )
 );

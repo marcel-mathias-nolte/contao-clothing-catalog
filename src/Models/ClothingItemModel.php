@@ -72,6 +72,8 @@ class ClothingItemModel extends Model
      */
     protected static $strTable = 'tl_clothing_items';
 
+    private static $arrPropertyCache = array();
+
     /**
      * Find an item by its ID or alias and its category
      *
@@ -134,10 +136,11 @@ class ClothingItemModel extends Model
      * @param integer $intColor    color ID
      * @param integer $intMaterial material ID
      * @param array   $arrOptions  An optional options array
+     * @param array   $arrProperties  Properties
      *
      * @return array The model or null if there is no item
      */
-    public static function findPublishedByCategoryAndMaterialAndColor($intCategory, $intColor, $intMaterial, array $arrOptions=array())
+    public static function findPublishedByCategoryAndMaterialAndColor($intCategory, $intColor, $intMaterial, $arrProperties, array $arrOptions=array())
     {
         $t = static::$strTable;
 
@@ -166,11 +169,40 @@ class ClothingItemModel extends Model
             $time = Date::floorToMinute();
             $arrColumns[] = "$t.published='1'";
         }
+
+        // Cache PropertyIds
+        if (count(static::$arrPropertyCache) == 0) {
+            $objProperties = ClothingPropertyModel::findAll();
+            if ($objProperties != null) {
+                foreach ($objProperties as $objProperty) {
+                    static::$arrPropertyCache[$objProperty->alias] = $objProperty->id;
+                }
+                if ($objProperty->type == 'select') {
+                    $objValues = ClothingPropertyValueModel::findByPid($objProperty->id);
+                    if ($objValues != null) {
+                        foreach ($objValues as $objValue) {
+                            static::$arrPropertyCache[$objProperty->alias.'/'.$objValue->alias] = $objValue->id;
+                        }
+                    }
+                }
+            }
+        }
+
         $arrResults = array();
         $objResult = static::findBy($arrColumns, $arrValues, $arrOptions);
         if ($objResult != null) {
             foreach ($objResult as $objRecord) {
-                $arrResults[] = (object)$objRecord->row();
+                $arrRow = $objRecord->row();
+                $arrRow['properties'] = deserialize($arrRow['properties']);
+                $arrRow['options'] = deserialize($arrRow['options']);
+                foreach ($arrProperties as $property => $value) {
+                    if ($value === true && !in_array(static::$arrPropertyCache[$property], $arrRow['properties'])) {
+                        continue;
+                    } else if (false) {
+                        continue;
+                    }
+                }
+                $arrResults[] = (object)$arrRow;
             }
         }
 

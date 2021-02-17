@@ -40,6 +40,7 @@ $GLOBALS['TL_DCA']['tl_clothing_categories'] = array
         'label' => array
         (
             'fields'                  => array('title'),
+            'label_callback'          => array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingCategories', 'generateLabel')
         ),
         'global_operations' => array
         (

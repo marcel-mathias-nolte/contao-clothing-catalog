@@ -23,6 +23,10 @@ $GLOBALS['TL_LANG']['tl_clothing_items']['color']                     = array('H
 $GLOBALS['TL_LANG']['tl_clothing_items']['materials']                 = array('Materialien','Materialien des Kleidungsstücks');
 $GLOBALS['TL_LANG']['tl_clothing_items']['multiSRC']                  = array('Bilder','Bilder des Kleidungsstücks');
 $GLOBALS['TL_LANG']['tl_clothing_items']['published']                 = array('Veröffentlicht','Veröffentlichung des Kleidungsstücks');
+$GLOBALS['TL_LANG']['tl_clothing_items']['properties']                = array('Merkmale','Merkmale des Kleidungsstücks');
+$GLOBALS['TL_LANG']['tl_clothing_items']['options']                   = array('Optionen','Optionen des Kleidungsstücks');
+$GLOBALS['TL_LANG']['tl_clothing_items']['options']['property']       = array('Eigenschaft','Eigenschaft des Kleidungsstücks');
+$GLOBALS['TL_LANG']['tl_clothing_items']['options']['value']          = array('Wert','Wert der Eigenschaft des Kleidungsstücks');
 
 // Buttons
 $GLOBALS['TL_LANG']['tl_clothing_items']['new']                       = array('Neues Kleidungsstück', 'Ein neues Kleidungsstück anlegen');

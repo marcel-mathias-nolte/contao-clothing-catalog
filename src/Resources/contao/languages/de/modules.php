@@ -17,6 +17,7 @@ $GLOBALS['TL_LANG']['MOD']['clothing_catalog_categories'] = array('Kategorien', 
 $GLOBALS['TL_LANG']['MOD']['clothing_catalog_colors'] = array('Farben', 'Verwaltung der Farben.');
 $GLOBALS['TL_LANG']['MOD']['clothing_catalog_materials'] = array('Materialien', 'Verwaltung der Materialien.');
 $GLOBALS['TL_LANG']['MOD']['clothing_catalog_items'] = array('Kleidungsstücke', 'Verwaltung der Kleidungsstücke.');
+$GLOBALS['TL_LANG']['MOD']['clothing_catalog_properties'] = array('Eigenschaften', 'Verwaltung der Eigenschaften.');
 /**
  * Front end modules
  */

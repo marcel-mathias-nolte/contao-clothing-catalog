@@ -15,6 +15,7 @@ use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingCategoryModel;
 use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingColorModel;
 use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingItemModel;
 use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingMaterialModel;
+use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingPropertyModel;
 
 abstract class ContentClothing extends \ContentElement {
 
@@ -26,6 +27,7 @@ abstract class ContentClothing extends \ContentElement {
     public static $strMaterial;
     public static $intMaterial;
     public static $arrMatchedItems;
+    public static $arrProperties = array();
 
     /**
      * Compile the content element
@@ -33,9 +35,9 @@ abstract class ContentClothing extends \ContentElement {
     public function generate(): string
     {
         if (!self::$autoItemParsed) {
-            \Input::setGet($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'], \Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category']));
-            \Input::setGet($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'], \Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color']));
-            \Input::setGet($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'], \Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material']));
+            foreach($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties'] as $label) {
+                \Input::setGet($label, \Input::get($label));
+            }
 
             self::$strCategory = \Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category']);
             self::$strColor = \Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color']);
@@ -56,7 +58,26 @@ abstract class ContentClothing extends \ContentElement {
                 self::$intMaterial = (int)$objMaterial->id;
             }
 
-            self::$arrMatchedItems = ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(self::$intCategory, self::$intMaterial, self::$intColor);
+            $objProperties = ClothingPropertyModel::findAll();
+            if ($objProperties != null) {
+                foreach ($objProperties as $objProperty) {
+                    if ($objProperty->type == 'checkbox') {
+                        \Input::setGet($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['with_property'][0] . $objProperty->alias, \Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['with_property'][0] . $objProperty->alias));
+                        if (\Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['with_property'][0] . $objProperty->alias) == $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['with_property'][1]) {
+                            self::$arrProperties[$objProperty->alias] = true;
+                        }
+                    } else if ($objProperty->type == 'select') {
+                        \Input::setGet($objProperty->alias, \Input::get($objProperty->alias));
+                        $strValue = \Input::get($objProperty->alias);
+                        if (ClothingPropertyModel::isValidValue($objProperty->alias, $strValue)) {
+                            self::$arrProperties[$objProperty->alias] = $strValue;
+                        }
+                    }
+                }
+            }
+
+            self::$arrMatchedItems = ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(self::$intCategory, self::$intMaterial, self::$intColor, self::$arrProperties);
+            self::$strCategory = \Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category']);
             self::$autoItemParsed = true;
         }
         return parent::generate();
@@ -108,5 +129,65 @@ abstract class ContentClothing extends \ContentElement {
             $color = '#FFFFFF';
         }
         return $color;
+    }
+
+    /**
+     * Return the href and item count to a given changed property
+     * @param string $strProperty;
+     * @param string|integer|bool $value;
+     * @param integer $id;
+     * @return array
+     */
+    public static function getHrefAndCount(string $strProperty, $value, int $id = 0) : array {
+        global $objPage;
+        $arrUrlParts = array('');
+        if ($strProperty == 'category') {
+            $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . $value;
+        } else if (static::$intCategory > 0) {
+            $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . static::$strCategory;
+        }
+        if ($strProperty == 'color') {
+            $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . $value;
+        } else if (static::$intColor > 0) {
+            $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . static::$strColor;
+        }
+        if ($strProperty == 'material') {
+            $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . $value;
+        } else if (static::$intMaterial > 0) {
+            $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . static::$strMaterial;
+        }
+        $properties = static::$arrProperties;
+        if ($strProperty != 'category' && $strProperty != 'color' && $strProperty != 'material') {
+            $objProperty = ClothingPropertyModel::findByAlias($strProperty);
+            if ($objProperty != null) {
+                if ($objProperty->type == 'checkbox') {
+                    if (!$value) {
+                        unset($properties[$strProperty]);
+                    } else {
+                        $properties[$strProperty] = true;
+                    }
+                } else if ($objProperty->type == 'select') {
+                    if (!$value) {
+                        unset($properties[$strProperty]);
+                    } else {
+                        $properties[$strProperty] = $value;
+                    }
+                }
+            }
+        }
+        if (count($properties) > 0) {
+            foreach ($properties as $prop => $value) {
+                if ($value === true) {
+                    $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['with_property'][0] . $prop . '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['with_property'][1];
+                } else {
+                    $arrUrlParts[] = $prop . '/' . $value;
+                }
+            }
+        }
+        $arrResult = array(
+            'href' => static::generateFrontendUrl($objPage->row(), implode('/', $arrUrlParts)),
+            'resultCount' => count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor($strProperty == 'category' ? $id : parent::$intCategory, $strProperty == 'color' ? $id : parent::$intColor, $strProperty == 'material' ? $id : static::$intMaterial, $properties))
+        );
+        return $arrResult;
     }
 }

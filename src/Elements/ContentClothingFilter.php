@@ -16,6 +16,8 @@ use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingCategoryModel;
 use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingColorModel;
 use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingItemModel;
 use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingMaterialModel;
+use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingPropertyModel;
+use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingPropertyValueModel;
 
 class ContentClothingFilter extends ContentClothing {
 
@@ -48,15 +50,14 @@ class ContentClothingFilter extends ContentClothing {
      */
     protected function compile()
     {
-        global $objPage;
-
+        $href = parent::getHrefAndCount('color', false);
         $arrColors = array(
             array(
                 'title' => $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['all_colors'],
                 'color' => false,
                 'selected' => !parent::$intColor,
-                'href' => $this->generateFrontendUrl($objPage->row(), (parent::$intCategory > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . parent::$strCategory : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . parent::$strMaterial : '')),
-                'resultCount' => count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(parent::$intCategory, 0, parent::$intMaterial))
+                'href' => $href['href'],
+                'resultCount' => $href['resultCount']
            )
         );
         $objColors = ClothingColorModel::findAll(['order' => 'title ASC']);
@@ -67,22 +68,24 @@ class ContentClothingFilter extends ContentClothing {
                 $arrData['color'] = $color;
                 $arrData['fgcolor'] = '#' . $color[0];
                 $arrData['selected'] = $objColor->id == parent::$intColor;
-                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), (parent::$intCategory > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . parent::$strCategory : '') . '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . $objColor->alias . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . parent::$strMaterial : ''));
                 $arrData['bgcolor'] = parent::getContrastColor($arrData['fgcolor']);
-				$arrData['resultCount'] = count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(parent::$intCategory, $objColor->id, parent::$intMaterial));
+                $href = parent::getHrefAndCount('color', $objColor->alias, $objColor->id);
+                $arrData['href'] = $href['href'];
+                $arrData['resultCount'] = $href['resultCount'];
                 $arrColors[] = (object)$arrData;
             }
         }
         $this->Template->colors = $arrColors;
 
+        $href = parent::getHrefAndCount('material', false);
         $arrMaterials = array(
             array(
                 'title' => $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['all_materials'],
                 'color' => false,
                 'singleSRC' => false,
                 'selected' => !parent::$intMaterial,
-                'href' => $this->generateFrontendUrl($objPage->row(), (parent::$intCategory > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . parent::$strCategory : '') . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . parent::$strColor : '')),
-                'resultCount' => count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(0, parent::$intColor, parent::$intMaterial))
+                'href' => $href['href'],
+                'resultCount' => $href['resultCount']
             )
         );
         $objMaterials = ClothingMaterialModel::findAll(['order' => 'title ASC']);
@@ -94,8 +97,9 @@ class ContentClothingFilter extends ContentClothing {
                 $objFile = \FilesModel::findByUuid($arrData['singleSRC']);
                 $arrData['singleSRC'] = $objFile != null ? (object)$objFile->row() : false;
                 $arrData['selected'] = $objMaterial->id == parent::$intMaterial;
-                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), (parent::$intCategory > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . parent::$strCategory : '') . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . parent::$strColor : '') . '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . $objMaterial->alias);
-                $arrData['resultCount'] = count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(parent::$intCategory, parent::$intColor, $objMaterial->id));
+                $href = parent::getHrefAndCount('material', $objMaterial->alias, $objMaterial->id);
+                $arrData['href'] = $href['href'];
+                $arrData['resultCount'] = $href['resultCount'];
                 $arrMaterials[] = (object)$arrData;
             }
         }
@@ -114,20 +118,23 @@ class ContentClothingFilter extends ContentClothing {
                 $arrData['color'] = $color;
                 $objFile = \FilesModel::findByUuid($arrData['singleSRC']);
                 $arrData['singleSRC'] = $objFile != null ? (object)$objFile->row() : false;
-                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . $objCategory->alias . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . parent::$strColor : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . parent::$strMaterial : ''));
-                $arrData['resultCount'] = count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(parent::$intCategory, $objColor->id, parent::$intMaterial));
+                $href = parent::getHrefAndCount('category', $objCategory->alias, $objCategory->id);
+                $arrData['href'] = $href['href'];
+                $arrData['resultCount'] = $href['resultCount'];
                 $arrChildCategories[] = (object)$arrData;
             }
         }
         $this->Template->childCategories = $arrChildCategories;
 
         $arrCategoryBreadCrumb = array();
+
         if (parent::$intCategory) {
+            $href = parent::getHrefAndCount('category', false);
             $arrData = array(
 				'title' => $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['all_categories'],
 				'singleSRC' => false,
-				'href' => $this->generateFrontendUrl($objPage->row(), (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . parent::$strColor : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . parent::$strMaterial : '')),
-                'resultCount' => count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(0, parent::$intColor, parent::$intMaterial))
+                'href' => $href['href'],
+                'resultCount' => $href['resultCount']
 			);
             $arrCategoryBreadCrumb[] = (object)$arrData;
             $intId = parent::$intCategory;
@@ -137,13 +144,53 @@ class ContentClothingFilter extends ContentClothing {
                 $arrData['color'] = $color;
                 $objFile = \FilesModel::findByUuid($arrData['singleSRC']);
                 $arrData['singleSRC'] = $objFile != null ? (object)$objFile->row() : false;
-                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . $objCategory->alias . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . parent::$strColor : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . parent::$strMaterial : ''));
-                $arrData['resultCount'] = count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor($objCategory->id, parent::$intColor, parent::$intMaterial));
+                $href = parent::getHrefAndCount('category', $objCategory->alias, $objCategory->id);
+                $arrData['href'] = $href['href'];
+                $arrData['resultCount'] = $href['resultCount'];
                 $arrCategoryBreadCrumb[] = (object)$arrData;
                 $intId = $objCategory->pid;
             }
         }
         $this->Template->categoryBreadcrumb = $arrCategoryBreadCrumb;
+
+        $arrPropertiesCheckbox = array();
+        $arrPropertiesDropDown = array();
+        $objProperties = ClothingPropertyModel::findAll(['order' => 'title ASC']);
+        if ($objProperties != null) {
+            foreach ($objProperties as $objProperty) {
+                $arrData = $objProperty->row();
+                if ($objProperty->type == 'checkbox') {
+                    $href = parent::getHrefAndCount($objProperty->alias, !isset(parent::$arrProperties[$objProperty->alias]));
+                    $arrData['selected'] = isset(parent::$arrProperties[$objProperty->alias]);
+                    $arrData['href'] = $href['href'];
+                    $arrData['resultCount'] = $href['resultCount'];
+                    $arrPropertiesCheckbox[] = (object)$arrData;
+                } else if ($objProperty->type == 'select') {
+                    $objValues = ClothingPropertyValueModel::findByPid($objProperty->id, ['order' => 'sorting ASC']);
+                    if ($objValues != null) {
+                        $totalCount = 0;
+                        $arrValues = array();
+                        foreach ($objValues as $objValue) {
+                            $arrValue = $objValue->row();
+                            $href = parent::getHrefAndCount($objProperty->alias, $objValue->alias);
+                            $arrValue['selected'] = isset(parent::$arrProperties[$objProperty->alias]) && parent::$arrProperties[$objProperty->alias] == $objValue->alias;
+                            $arrValue['href'] = $href['href'];
+                            $arrValue['resultCount'] = $href['resultCount'];
+                            $totalCount += $href['resultCount'];
+                            $arrValues[] = $arrValue;
+                        }
+                        $href = parent::getHrefAndCount($objProperty->alias, false);
+                        $arrData['selected'] = !isset(parent::$arrProperties[$objProperty->alias]);
+                        $arrData['href'] = $href['href'];
+                        $arrData['resultCount'] = $href['resultCount'];
+                        $arrData['totalCount'] = $totalCount;
+                        $arrPropertiesDropDown[] = (object)$arrData;
+                    }
+                }
+            }
+        }
+        $this->Template->checkboxes = $arrPropertiesCheckbox;
+        $this->Template->dropdowns = $arrPropertiesDropDown;
 
         $this->Template->resultCount = count(parent::$arrMatchedItems);
 
@@ -186,8 +233,9 @@ class ContentClothingFilter extends ContentClothing {
                 $arrData['singleSRC'] = $objFile != null ? (object)$objFile->row() : false;
                 $arrData['selected'] = $objCategory->id == parent::$intCategory;
                 $arrData['level'] = $intLevel;
-                $arrData['href'] = $this->generateFrontendUrl($objPage->row(), '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . $objCategory->alias . (parent::$intColor > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . parent::$strColor : '') . (parent::$intMaterial > 0 ? '/' . $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . parent::$strMaterial : ''));
-                $arrData['resultCount'] = count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor($objCategory->id, parent::$intColor, parent::$intMaterial));
+                $href = parent::getHrefAndCount('category', $objCategory->alias, $objCategory->id);
+                $arrData['href'] = $href['href'];
+                $arrData['resultCount'] = $href['resultCount'];
                 $arrItems[] = (object)$arrData;
                 $this->renderCategoryTree($objCategory->id, $arrItems, $intLevel + 1);
             }

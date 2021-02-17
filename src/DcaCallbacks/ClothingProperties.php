@@ -17,6 +17,7 @@ use DataContainer;
 use Exception;
 use Image;
 use Input;
+use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingPropertyValueModel;
 use PageModel;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use StringUtil;
@@ -29,11 +30,11 @@ use function in_array;
  *
  * @author  Marcel Mathias Nolte
  */
-class ClothingMaterials extends Backend
+class ClothingProperties extends Backend
 {
 
-    private $strAliasPrefix = 'material-';
-    private $strTableName = 'tl_clothing_materials';
+    private $strAliasPrefix = 'property-';
+    private $strTableName = 'tl_clothing_properties';
 
     /**
      * Auto-generate an alias if it has not been set yet
@@ -107,14 +108,37 @@ class ClothingMaterials extends Backend
      * @return var
      */
     public function generateLabel($row, $label){
-        if (trim($row['singleSRC']) != '') {
-            $objFile = \FilesModel::findByUuid($row['singleSRC']);
-            if ($objFile != null) {
-                return '<div style="background-image: url(\'' . $objFile->path . '\'); background-size: cover; background-position: center center; width: 100px; height: 100px; float: left;"></div><div style="margin-left: 120px;">' . $label . '</div><div style="clear: both;"></div>';
+        $label = '<strong>' . $label . '</strong><br /><em>[' . $GLOBALS['TL_LANG']['tl_clothing_properties']['type'][$row['type']] . ']</em>';
+        if ($row['type'] == 'select') {
+            $objValues = ClothingPropertyValueModel::findByPid($row['id']);
+            $arrValues = array();
+            if ($objValues != null) {
+                foreach ($objValues as $objValue) {
+                    $arrValues[] = $objValue->title;
+                }
+            } else {
+                $arrValues[] = '-';
             }
+            $label .= '<br />' . $GLOBALS['TL_LANG']['tl_clothing_properties']['type']['values'] . ': <em>' . implode(', ', $arrValues) . '</em>';
         }
+        return $label;
+    }
 
-        return '<div style="width: 100px; height: 100px; float: left;"></div><div style="margin-left: 120px;">' . $label . '</div><div style="clear: both;"></div>';
+    /**
+     * Return the edit header button
+     *
+     * @param array  $row
+     * @param string $href
+     * @param string $label
+     * @param string $title
+     * @param string $icon
+     * @param string $attributes
+     *
+     * @return string
+     */
+    public function generateEditButton($row, $href, $label, $title, $icon, $attributes)
+    {
+        return $row['type'] == 'select' ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
     }
 
     /**
@@ -175,7 +199,7 @@ class ClothingMaterials extends Backend
                 }
 
                 // Initialize the version manager
-                $objVersions = new Versions('tl_clothing_materials', $id);
+                $objVersions = new Versions($this->strTableName, $id);
                 $objVersions->initialize();
 
                 // Store the new alias

@@ -11,6 +11,8 @@
 
 namespace MarcelMathiasNolte\ContaoClothingCatalogBundle;
 
+use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingPropertyModel;
+
 /**
  * Models
  */
@@ -19,6 +21,8 @@ $GLOBALS['TL_MODELS']['tl_clothing_categories'] = Models\ClothingCategoryModel::
 $GLOBALS['TL_MODELS']['tl_clothing_colors'] = Models\ClothingColorModel::class;
 $GLOBALS['TL_MODELS']['tl_clothing_materials'] = Models\ClothingMaterialModel::class;
 $GLOBALS['TL_MODELS']['tl_clothing_items'] = Models\ClothingItemModel::class;
+$GLOBALS['TL_MODELS']['tl_clothing_properties'] = Models\ClothingPropertyModel::class;
+$GLOBALS['TL_MODELS']['tl_clothing_property_values'] = Models\ClothingPropertyValueModel::class;
 
 /**
  * Content Elements
@@ -57,6 +61,9 @@ if (!isset($GLOBALS['BE_MOD']['clothing_catalog']['clothing_catalog_categories']
         ),
         'clothing_catalog_materials' => array(
             'tables' => array('tl_clothing_materials')
+        ),
+        'clothing_catalog_properties' => array(
+            'tables' => array('tl_clothing_properties', 'tl_clothing_property_values')
         )
     ));
 }
