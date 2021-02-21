@@ -15,6 +15,7 @@
 $GLOBALS['TL_LANG']['tl_clothing_items']['title_legend']              = 'Name/Bezeichnung';
 $GLOBALS['TL_LANG']['tl_clothing_items']['property_legend']           = 'Eigenschaften';
 $GLOBALS['TL_LANG']['tl_clothing_items']['published_legend']          = 'Veröffentlichung';
+$GLOBALS['TL_LANG']['tl_clothing_items']['options_legend']          = 'Optionen';
 
 // Fields
 $GLOBALS['TL_LANG']['tl_clothing_items']['alias']                     = array('Alias','Alias des Kleidungsstücks');
@@ -24,9 +25,7 @@ $GLOBALS['TL_LANG']['tl_clothing_items']['materials']                 = array('M
 $GLOBALS['TL_LANG']['tl_clothing_items']['multiSRC']                  = array('Bilder','Bilder des Kleidungsstücks');
 $GLOBALS['TL_LANG']['tl_clothing_items']['published']                 = array('Veröffentlicht','Veröffentlichung des Kleidungsstücks');
 $GLOBALS['TL_LANG']['tl_clothing_items']['properties']                = array('Merkmale','Merkmale des Kleidungsstücks');
-$GLOBALS['TL_LANG']['tl_clothing_items']['options']                   = array('Optionen','Optionen des Kleidungsstücks');
-$GLOBALS['TL_LANG']['tl_clothing_items']['options']['property']       = array('Eigenschaft','Eigenschaft des Kleidungsstücks');
-$GLOBALS['TL_LANG']['tl_clothing_items']['options']['value']          = array('Wert','Wert der Eigenschaft des Kleidungsstücks');
+$GLOBALS['TL_LANG']['tl_clothing_items']['totalPieces']               = array('Anzahl Teile','Anzahl der Teile des Kleidungsstücks');
 
 // Buttons
 $GLOBALS['TL_LANG']['tl_clothing_items']['new']                       = array('Neues Kleidungsstück', 'Ein neues Kleidungsstück anlegen');

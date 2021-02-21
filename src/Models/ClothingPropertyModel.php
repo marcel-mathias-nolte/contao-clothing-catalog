@@ -53,7 +53,7 @@ class ClothingPropertyModel extends Model
      * Table name
      * @var string
      */
-    protected static $strTable = 'tl_clothing_properties';
+    public static $strTable = 'tl_clothing_properties';
 
     /**
      * Check if the value is valid for this property
@@ -62,7 +62,7 @@ class ClothingPropertyModel extends Model
      * @return bool
      */
     public static function isValidValue(string $property, string $value) : bool {
-        $objResult = \Database::getInstance()->prepare("SELECT COUNT(*) as amt FROM " . static::$strTable . " a INNER JOIN " . ClothingPropertyValueModel::strTable . " b ON a.id = b.pid AND a.alias = ? AND b.alias = ?")->execute($property, $value);
+        $objResult = \Database::getInstance()->prepare("SELECT COUNT(*) as amt FROM " . static::$strTable . " a INNER JOIN " . ClothingPropertyValueModel::$strTable . " b ON a.id = b.pid AND a.alias = ? AND b.alias = ?")->execute($property, $value);
         if ($objResult->next() && $objResult->amt > 0) {
             return true;
         }

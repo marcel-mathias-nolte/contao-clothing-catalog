@@ -11,6 +11,7 @@
 
 namespace MarcelMathiasNolte\ContaoClothingCatalogBundle;
 
+use MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingItems;
 use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingPropertyModel;
 
 /**
@@ -35,8 +36,8 @@ if (!isset($GLOBALS['TL_CTE']['clothing_catalog'])) {
 }
 array_insert($GLOBALS['TL_CTE']['clothing_catalog'], 0, array(
     'clothing_catalog_filter' => '\\MarcelMathiasNolte\\ContaoClothingCatalogBundle\\Elements\\ContentClothingFilter',
-    'clothing_catalog_list'   => '\\MarcelMathiasNolte\\ContaoClothingCatalogBundle\\Elements\\ContentClothingList',
-    'clothing_catalog_details' => '\\MarcelMathiasNolte\\ContaoClothingCatalogBundle\\Elements\\ContentClothingDetails'
+//    'clothing_catalog_list'   => '\\MarcelMathiasNolte\\ContaoClothingCatalogBundle\\Elements\\ContentClothingList',
+//    'clothing_catalog_details' => '\\MarcelMathiasNolte\\ContaoClothingCatalogBundle\\Elements\\ContentClothingDetails'
 ));
 
 /**
@@ -75,3 +76,8 @@ if (!isset($GLOBALS['BE_MOD']['clothing_catalog']['clothing_catalog_categories']
 if( TL_MODE === 'BE' ) {
     $GLOBALS['TL_CSS'][] = 'bundles/contaoclothingcatalog/css/backend.css';
 }
+
+/**
+ * Hooks
+ */
+$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('\\MarcelMathiasNolte\\ContaoClothingCatalogBundle\\DcaCallbacks\\ClothingItems', 'applyDcaExtension');

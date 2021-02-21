@@ -12,7 +12,14 @@
 namespace MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks;
 
 use Backend;
-use ClothingColorModel;
+use Contao\ArrayUtil;
+use Contao\Database;
+use Contao\File;
+use Contao\FilesModel;
+use Contao\Message;
+use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingColorModel;
+use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingItemModel;
+use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingPropertyValueModel;
 use DataContainer;
 use Exception;
 use Image;
@@ -107,17 +114,89 @@ class ClothingItems extends Backend
      * @param $label
      * @return var
      */
-    public function generateLabel($row, $label){
-        $image = 'articles';
-        $unpublished = ($row['start'] && $row['start'] > time()) || ($row['stop'] && $row['stop'] <= time());
+    public function generateLabel($row, $label) {
+        $multiSRC = \Contao\StringUtil::deserialize($row['multiSRC']);
+        if (!empty($multiSRC) && \is_array($multiSRC)) {
+            $objFiles = FilesModel::findMultipleByUuids($multiSRC);
+            if ($objFiles !== null) {
+                $images = array();
+                while ($objFiles->next()) {
+                    if (isset($images[$objFiles->path]) || !file_exists(\Contao\System::getContainer()->getParameter('kernel.project_dir') . '/' . $objFiles->path)) {
+                        continue;
+                    }
+                    if ($objFiles->type == 'file') {
+                        $objFile = new File($objFiles->path);
+                        if (!$objFile->isImage) {
+                            continue;
+                        }
+                        $images[$objFiles->path] = array
+                        (
+                            'id' => $objFiles->id,
+                            'uuid' => $objFiles->uuid,
+                            'name' => $objFile->basename,
+                            'singleSRC' => $objFiles->path,
+                            'filesModel' => $objFiles->current()
+                        );
+                        $auxDate[] = $objFile->mtime;
+                    } else {
+                        $objSubfiles = FilesModel::findByPid($objFiles->uuid, array('order' => 'name'));
+                        if ($objSubfiles === null) {
+                            continue;
+                        }
+                        while ($objSubfiles->next()) {
+                            if ($objSubfiles->type == 'folder') {
+                                continue;
+                            }
+                            $objFile = new File($objSubfiles->path);
+                            if (!$objFile->isImage) {
+                                continue;
+                            }
+                            $images[$objSubfiles->path] = array
+                            (
+                                'id' => $objSubfiles->id,
+                                'uuid' => $objSubfiles->uuid,
+                                'name' => $objFile->basename,
+                                'singleSRC' => $objSubfiles->path,
+                                'filesModel' => $objSubfiles->current()
+                            );
+                            $auxDate[] = $objFile->mtime;
+                        }
+                    }
+                }
 
-        if ($unpublished || !$row['published'])
-        {
-            $image .= '_';
+                if (class_exists('ArrayUtil')) {
+
+                    $images = ArrayUtil::sortByOrderField($images, $row['orderSRC']);
+                    $images = array_values($images);
+                }
+                else if ($row['orderSRC'])
+                {
+                    $tmp = StringUtil::deserialize($row['orderSRC']);
+                    if (!empty($tmp) && \is_array($tmp))
+                    {
+                        $arrOrder = array_map(static function () {}, array_flip($tmp));
+                        foreach ($images as $k=>$v)
+                        {
+                            if (\array_key_exists($v['uuid'], $arrOrder))
+                            {
+                                $arrOrder[$v['uuid']] = $v;
+                                unset($images[$k]);
+                            }
+                        }
+                        if (!empty($images))
+                        {
+                            $arrOrder = array_merge($arrOrder, array_values($images));
+                        }
+                        $images = array_values(array_filter($arrOrder));
+                        unset($arrOrder);
+                    }
+                }
+                if (count($images) > 0) {
+                    return '<div style="background-image: url(\'' . $images[0]['singleSRC'] . '\'); background-size: cover; background-repeat: no-repeat; background-position: center center; width: 100px; height: 100px; float: right;"></div>' . $label . '';
+                }
+            }
         }
-
-        return '<a href="contao/preview.php?page=' . $row['pid'] . '&amp;article=' . ($row['alias'] ?: $row['id']) . '" title="' . StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['view']) . '" target="_blank">' . Image::getHtml($image . '.svg', '', 'data-icon="' . ($unpublished ? $image : rtrim($image, '_')) . '.svg" data-icon-disabled="' . rtrim($image, '_') . '_.svg"') . '</a> ' . $label;
-    }
+        return '<div style="width: 100px; height: 100px; float: right;"></div>' . $label . '';    }
 
     /**
      * Automatically generate the aliases
@@ -197,9 +276,50 @@ class ClothingItems extends Backend
         return $arrButtons;
     }
 
+    static $arrPropertyValueCache = array();
+
+    public static function applyDcaExtension($table = '')
+    {
+        if ($table == ClothingItemModel::$strTable) {
+            ClothingItems::applyDcaExtension();
+            $options = static::getOptions();
+            if (count($options) > 0) {
+                $palette = '';
+                foreach ($options as $alias => $label) {
+                    $palette .= ',option_' . $alias;
+                    $GLOBALS['TL_DCA']['tl_clothing_items']['fields']['option_' . $alias] = array(
+                        'inputType' => 'select',
+                        'label' => array($label, ''),
+                        'options' => static::getOptionValues($alias),
+                        'eval' => array('includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50'),
+                        'save_callback' => array(function ($varValue, $dc) {
+                            static::$arrPropertyValueCache[substr($dc->field, strlen('option_'))] = $varValue;
+                            return $dc->value;
+                        }),
+                        'load_callback' => array(function ($varValue, $dc) {
+                            $field = substr($dc->field, strlen('option_'));
+                            $options = deserialize($dc->activeRecord->options);
+                            return is_array($options) && isset($options[$field]) ? $options[$field] : '';
+                        })
+                    );
+                }
+                $GLOBALS['TL_DCA']['tl_clothing_items']['palettes']['default'] = str_replace(
+                    ';{published_legend}',
+                    ';{options_legend}' . $palette . ';{published_legend}',
+                    $GLOBALS['TL_DCA']['tl_clothing_items']['palettes']['default']
+                );
+                $GLOBALS['TL_DCA']['tl_clothing_items']['config']['onsubmit_callback'][] = function ($dc) {
+                    if (count(static::$arrPropertyValueCache) > 0) {
+                        Database::getInstance()->prepare("UPDATE " . ClothingItemModel::$strTable . " SET options = ? WHERE id = ?")->execute(serialize(static::$arrPropertyValueCache), $dc->id);
+                    }
+                };
+            }
+        }
+    }
+
     public function getProperties() {
         $arrValues = array();
-        $objProperties = ClothingPropertyModel::findAllByType('checkbox', ['order' => 'title ASC']);
+        $objProperties = ClothingPropertyModel::findByType('checkbox', ['order' => 'title ASC']);
         if ($objProperties != null) {
             foreach ($objProperties as $objProperty) {
                 $arrValues[$objProperty->alias] = $objProperty->title;
@@ -208,19 +328,41 @@ class ClothingItems extends Backend
         return $arrValues;
     }
 
-    public function getOptionValues() {
-        return array('a' => 'b');
+    protected static $arrOptionValuesCache = false;
+
+    public function getOptionValues(string $alias) {
+        if (static::$arrOptionValuesCache === false) {
+            $arrValues = array();
+            $objLister = \Database::getInstance()->prepare("SELECT a.alias AS grp, b.alias AS alias, b.title AS label FROM " . ClothingPropertyModel::$strTable . " a INNER JOIN " . ClothingPropertyValueModel::$strTable . " b ON a.id = b.pid AND a.type = ? ORDER BY b.sorting")->execute('select');
+            while ($objLister->next()) {
+                $arrValues[$objLister->grp][$objLister->alias] = $objLister->label;
+            }
+            static::$arrOptionValuesCache = $arrValues;
+        }
+        return isset(static::$arrOptionValuesCache[$alias]) ? static::$arrOptionValuesCache[$alias] : array();
     }
+
+    protected static $arrOptionsCache = false;
 
     public function getOptions() {
-        $arrValues = array();
-        $objProperties = ClothingPropertyModel::findAllByType('select', ['order' => 'title ASC']);
-        if ($objProperties != null) {
-            foreach ($objProperties as $objProperty) {
-                $arrValues[$objProperty->alias] = $objProperty->title;
+        if (static::$arrOptionsCache === false) {
+            $arrValues = array();
+            $objProperties = ClothingPropertyModel::findByType('select', ['order' => 'title ASC']);
+            if ($objProperties != null) {
+                foreach ($objProperties as $objProperty) {
+                    $arrValues[$objProperty->alias] = $objProperty->title;
+                }
             }
+            static::$arrOptionsCache = $arrValues;
         }
-        return $arrValues;
+        return static::$arrOptionsCache;
+    }
+
+    public static function showAbsoluteCount($dc) {
+        $objResult = Database::getInstance()->execute("SELECT SUM(totalPieces) AS s FROM " . ClothingItemModel::$strTable);
+        if ($objResult->next()) {
+            Message::addInfo(sprintf($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['absoluteCount'], $objResult->s));
+        }
     }
 
     /**

@@ -18,6 +18,7 @@ $GLOBALS['TL_DCA']['tl_clothing_items'] = array
         'ptable'                      => 'tl_clothing_categories',
         'enableVersioning'            => true,
         'markAsCopy'                  => 'title',
+        'onload_callback'             => array(array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingItems', 'showAbsoluteCount')),
         'sql' => array
         (
             'keys' => array
@@ -109,7 +110,7 @@ $GLOBALS['TL_DCA']['tl_clothing_items'] = array
     // Palettes
     'palettes' => array
     (
-        'default' => '{title_legend},title,alias;{properties_legend},color,materials,properties,options,multiSRC;{published_legend},published'
+        'default' => '{title_legend},title,alias;{properties_legend},color,materials,properties,options,multiSRC;{published_legend},published,totalPieces'
     ),
 
     // Fields
@@ -146,7 +147,7 @@ $GLOBALS['TL_DCA']['tl_clothing_items'] = array
         (
             'search'                  => true,
             'inputType'               => 'text',
-            'eval'                    => array('rgxp'=>'alias', 'doNotCopy'=>true, 'maxlength'=>255, 'tl_class'=>'w50 clr'),
+            'eval'                    => array('rgxp'=>'alias', 'doNotCopy'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
             'save_callback' => array
             (
                 array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingItems', 'generateAlias')
@@ -160,7 +161,7 @@ $GLOBALS['TL_DCA']['tl_clothing_items'] = array
             'inputType'               => 'select',
             'foreignKey'              => 'tl_clothing_colors.title',
             'relation'                => array('type'=>'hasOne', 'load'=>'lazy'),
-            'eval'                    => array('mandatory'=>true, 'tl_class'=>'w50'),
+            'eval'                    => array('mandatory'=>true, 'tl_class'=>'long clr'),
             'sql'                     => "int(10) unsigned NOT NULL default 0"
         ),
         'materials' => array
@@ -170,7 +171,7 @@ $GLOBALS['TL_DCA']['tl_clothing_items'] = array
             'inputType'               => 'checkbox',
             'foreignKey'              => 'tl_clothing_materials.title',
             'relation'                => array('type'=>'hasMany', 'load'=>'lazy'),
-            'eval'                    => array('mandatory'=>true, 'multiple'=>true),
+            'eval'                    => array('mandatory'=>true, 'multiple'=>true, 'tl_class' => 'long clr'),
             'sql'                     => "blob NULL"
         ),
         'published' => array
@@ -178,8 +179,15 @@ $GLOBALS['TL_DCA']['tl_clothing_items'] = array
             'exclude'                 => true,
             'filter'                  => true,
             'inputType'               => 'checkbox',
-            'eval'                    => array('doNotCopy'=>true),
+            'eval'                    => array('doNotCopy'=>true, 'tl_class' => 'w50'),
             'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'totalPieces' => array
+        (
+            'exclude'                 => true,
+            'inputType'               => 'text',
+            'eval'                    => array('tl_class' => 'w50', 'rgxp' => 'natural', 'maxlength' => 3),
+            'sql'                     => "int(10) NOT NULL default 1"
         ),
 		'multiSRC' => array
         (
@@ -198,37 +206,12 @@ $GLOBALS['TL_DCA']['tl_clothing_items'] = array
             'exclude'               => true,
             'inputType'             => 'checkboxWizard',
             'options_callback'       => array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingItems', 'getProperties'),
-            'eval'                  => array('multiple'=>true),
+            'eval'                  => array('multiple'=>true, 'tl_class' => 'long clr'),
             'sql'                   => 'blob NULL'
         ),
         'options' => array
         (
-            'exclude'               => true,
-            'inputType'             => 'multiColumnWizard',
-            'eval'      => [
-                'columnFields' => [
-                    'property'      => [
-                        'label'     => &$GLOBALS['TL_LANG']['tl_clothing_items']['options']['property'],
-                        'exclude'   => true,
-                        'inputType' => 'select',
-                        'eval'      => [
-                            'style'              => 'width:250px',
-                            'submitOnChange'     => true
-                        ],
-                        'options_callback' => array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingItems', 'getOptions'),
-                    ],
-                    'value' => [
-                        'label'     => &$GLOBALS['TL_LANG']['tl_clothing_items']['options']['value'],
-                        'exclude'   => true,
-                        'inputType' => 'select',
-                        'eval'      => [
-                            'style'              => 'width:250px'
-                        ],
-                        'options_callback' => array('MarcelMathiasNolte\ContaoClothingCatalogBundle\DcaCallbacks\ClothingItems', 'getOptionValues'),
-                    ],
-                ],
-            ],
-            'sql'       => 'blob NULL',
+            'sql'                   => 'blob NULL'
         )
     )
 );

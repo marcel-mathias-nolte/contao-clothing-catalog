@@ -24,9 +24,13 @@ $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['childCategories'] = 'Unterkatego
 $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['materials'] = 'Materialen';
 $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['colors'] = 'Farben';
 $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['categories'] = 'Kategorien';
+$GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['properties'] = 'Merkmale';
+$GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['options'] = 'Varianten';
+$GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['results'] = 'Ergebnisse';
 $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['all_categories'] = 'Alle Kategorien';
 $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['all_colors'] = 'Alle Farben';
 $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['all_materials'] = 'Alle Materialien';
+$GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['absoluteCount'] = 'Insgesamt wurden %u EInzelteile erfasst.';
 
 /**
  * ContentElements

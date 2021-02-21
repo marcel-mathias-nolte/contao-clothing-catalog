@@ -107,14 +107,19 @@ class ClothingCategories extends Backend
      * @return var
      */
     public function generateLabel($row, $label){
-        if (trim($row['singleSRC']) != '') {
-            $objFile = \FilesModel::findByUuid($row['singleSRC']);
-            if ($objFile != null) {
-                return '<div style="background-image: url(\'' . $objFile->path . '\'); background-size: contain; background-repeat: no-repeat; background-position: center center; width: 100px; height: 100px; float: right;"></div>' . $label . '';
+        if ($_GET['do'] == 'clothing_catalog_categories') {
+            if (trim($row['singleSRC']) != '') {
+                $objFile = \FilesModel::findByUuid($row['singleSRC']);
+                if ($objFile != null) {
+                    return '<div style="background-image: url(\'' . $objFile->path . '\'); background-size: contain; background-repeat: no-repeat; background-position: center center; width: 100px; height: 100px; float: right;"></div>' . $label . '';
+                }
             }
-        }
 
-        return '<div style="width: 100px; height: 100px; float: right;"></div>' . $label . '';
+            return '<div style="width: 100px; height: 100px; float: right;"></div>' . $label . '';
+        }
+        if ($_GET['do'] == 'clothing_catalog_items') {
+            return '<span style="font-weight: bold; font-size: 1.4em;">' . $label . '</span>';
+        }
     }
 
     /**

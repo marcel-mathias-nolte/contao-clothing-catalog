@@ -1,36 +1,271 @@
 .ce_clothing_catalog_filter {
-  position: fixed;
-  left: 2em;
-  top: 5em;
-  bottom: 2em;
-  width: 20vw;
+  aside.left {
+    position: fixed;
+    left: 2em;
+    top: 2em;
+    bottom: 2em;
+    width: 20em;
+    float: left;
+    clear: left;
+  }
+  aside.right {
+    position: fixed;
+    right: 2em;
+    top: 2em;
+    bottom: 2em;
+    width: 12em;
+    float: right;
+    clear: right;
+  }
   form {
     display: none;
   }
   nav {
-    label {
+    > label {
       display: block;
       font-family: Raleway, sans-serif;
       text-decoration: underline;
-      margin: 0.5em 0;
     }
-    li {
-      margin-right: 0;
+    &.categoryBreadcrumb {
+      text-align: left;
+      ul {
+        padding: 0;
+      }
+      li {
+        padding: 0;
+        text-align: left;
+        display: block;
+        &:not(:first-child):before {
+          content: '↳ ';
+        }
+        &:last-child a {
+          font-weight: bold;
+        }
+      }
     }
     &.colors {
+      text-align: left;
+      ul {
+        padding: 0;
+      }
       li {
         border: 0;
-        padding: 0.5em;
+        padding: 0.3em 0.5em;
         margin: 2px;
+        float: left;
+        &.colorful,
+        &.gold-metallic,
+        &.silber-metallic {
+          background-size: 180% 180%;
+          -webkit-animation: rainbow 18s ease infinite;
+          -z-animation: rainbow 18s ease infinite;
+          -o-animation: rainbow 18s ease infinite;
+          animation: rainbow 18s ease infinite;
+          color: #000;
+        }
+        &.colorful {
+          background-image: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
+        }
+        &.gold-metallic {
+          background-image:linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+        }
+        &.silber-metallic {
+          background-image:linear-gradient( 105deg, #bcc6cc 0%, #72767c 15%, #335 16%, #eee 50%, #bcc6cc);
+        }
         a {
           color: inherit;
         }
         &.active {
           font-weight: bold;
-          border: 2px solid #000;
-          margin: 0;
+          border-color: #f00 !important;
         }
       }
     }
+    &.materials {
+      text-align: left;
+      ul {
+        padding: 0;
+      }
+      li {
+        border: 0;
+        padding: 0;
+        margin: 2px;
+        float: left;
+        position: relative;
+        float: left;
+        width: 4.7em;
+        height: 4.7em;
+        border: 1px solid #000;
+        a {
+          color: inherit;
+          img {
+            width: 4.7em;
+            height: 4.7em;
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
+          > span {
+            display: block;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: calc(50% - 1em);
+            text-align: center;
+            text-shadow: #fff 0px 0px 0px, #fff 0px 0px 3px, #fff 0px 0px 5px;
+            font-weight: bold;
+          }
+        }
+        &.noimage {
+          a > span {
+            font-size: 0.75em;
+            top: calc(50% - 2em);
+          }
+        }
+        &.active {
+          border: 1px solid #f00;
+        }
+      }
+    }
+    &.properties {
+      text-align: left;
+      ul {
+        padding: 0;
+      }
+      li {
+        border: 0;
+        padding: 0;
+        margin: 2px;
+        display: block;
+        input {
+          margin-right: 0.5em;
+        }
+      }
+    }
+    &.options {
+      text-align: left;
+      ul {
+        padding: 0;
+      }
+      li {
+        border: 0;
+        padding: 0;
+        margin: 2px;
+        display: block;
+      }
+    }
+    &.childCategories {
+      text-align: left;
+      margin: 2em 14em 0 22em;
+      .scroller {
+        overflow: auto;
+      }
+      ul {
+        padding: 0;
+      }
+      li {
+        border: 0;
+        padding: 0;
+        margin: 2px;
+        float: left;
+        position: relative;
+        float: left;
+        width: 8em;
+        height: 10em;
+        margin-right: 1em;
+        a {
+          color: inherit;
+          img {
+            width: 8em;
+            height: 8em;
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
+          span {
+            display: block;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.8em;
+          }
+        }
+        &.noimage {
+          a span {
+            font-size: 0.75em;
+          }
+        }
+        &.active {
+          border: 1px solid #f00;
+        }
+      }
+
+    }
+    &.items {
+      text-align: left;
+      margin: 0 14em 0 22em;
+      ul {
+        padding: 0;
+      }
+      li {
+        border: 0;
+        padding: 0;
+        margin: 2px;
+        float: left;
+        float: left;
+        width: 14em;
+        height: 19em;
+        margin-right: 1em;
+        a {
+          color: inherit;
+          img {
+            width: 14em;
+            height: 14em;
+          }
+          > span {
+            display: block;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.8em;
+          }
+        }
+        &.noimage {
+          a > span {
+            font-size: 0.75em;
+          }
+        }
+        &.active {
+          border: 1px solid #f00;
+        }
+      }
+
+    }
   }
+  span.count {
+    font-size: 0.75em;
+  }
+}
+
+@-webkit-keyframes rainbow {
+  0%{background-position:0% 82%}
+  50%{background-position:100% 19%}
+  100%{background-position:0% 82%}
+}
+@-moz-keyframes rainbow {
+  0%{background-position:0% 82%}
+  50%{background-position:100% 19%}
+  100%{background-position:0% 82%}
+}
+@-o-keyframes rainbow {
+  0%{background-position:0% 82%}
+  50%{background-position:100% 19%}
+  100%{background-position:0% 82%}
+}
+@keyframes rainbow {
+  0%{background-position:0% 82%}
+  50%{background-position:100% 19%}
+  100%{background-position:0% 82%}
 }

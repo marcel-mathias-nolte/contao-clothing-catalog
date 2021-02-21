@@ -70,7 +70,7 @@ class ClothingItemModel extends Model
      * Table name
      * @var string
      */
-    protected static $strTable = 'tl_clothing_items';
+    public static $strTable = 'tl_clothing_items';
 
     private static $arrPropertyCache = array();
 
@@ -166,24 +166,15 @@ class ClothingItemModel extends Model
 
         if (!static::isPreviewMode($arrOptions))
         {
-            $time = Date::floorToMinute();
             $arrColumns[] = "$t.published='1'";
         }
 
         // Cache PropertyIds
         if (count(static::$arrPropertyCache) == 0) {
-            $objProperties = ClothingPropertyModel::findAll();
+            $objProperties = ClothingPropertyModel::findByType('checkbox');
             if ($objProperties != null) {
                 foreach ($objProperties as $objProperty) {
                     static::$arrPropertyCache[$objProperty->alias] = $objProperty->id;
-                }
-                if ($objProperty->type == 'select') {
-                    $objValues = ClothingPropertyValueModel::findByPid($objProperty->id);
-                    if ($objValues != null) {
-                        foreach ($objValues as $objValue) {
-                            static::$arrPropertyCache[$objProperty->alias.'/'.$objValue->alias] = $objValue->id;
-                        }
-                    }
                 }
             }
         }
@@ -191,18 +182,27 @@ class ClothingItemModel extends Model
         $arrResults = array();
         $objResult = static::findBy($arrColumns, $arrValues, $arrOptions);
         if ($objResult != null) {
+            if (!($objResult instanceof Collection) && !is_array($objResult)) {
+                $objResult = array($objResult);
+            }
             foreach ($objResult as $objRecord) {
                 $arrRow = $objRecord->row();
                 $arrRow['properties'] = deserialize($arrRow['properties']);
                 $arrRow['options'] = deserialize($arrRow['options']);
-                foreach ($arrProperties as $property => $value) {
-                    if ($value === true && !in_array(static::$arrPropertyCache[$property], $arrRow['properties'])) {
-                        continue;
-                    } else if (false) {
-                        continue;
+                if (!is_array($arrRow['properties'])) {
+                    $arrRow['properties'] = array();
+                }
+                if (count($arrProperties) > 0) {
+                    foreach ($arrProperties as $property => $value) {
+                        if ($value === true && isset(static::$arrPropertyCache[$property]) && !in_array($property, $arrRow['properties'])) {
+                            continue 2;
+                        } else if (!isset(static::$arrPropertyCache[$property]) && (!isset($arrRow['options'][$property]) || $arrRow['options'][$property] != $value)) {
+                            continue 2;
+                        }
                     }
                 }
                 $arrResults[] = (object)$arrRow;
+                var_dump($arrResults);
             }
         }
 

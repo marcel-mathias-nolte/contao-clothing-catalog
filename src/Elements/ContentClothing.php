@@ -11,6 +11,12 @@
 
 namespace MarcelMathiasNolte\ContaoClothingCatalogBundle\Elements;
 
+use Contao\File;
+use Contao\FilesModel;
+use Contao\PageModel;
+use Contao\StringUtil;
+use Contao\System;
+use Contao\ArrayUtil;
 use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingCategoryModel;
 use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingColorModel;
 use MarcelMathiasNolte\ContaoClothingCatalogBundle\Models\ClothingItemModel;
@@ -69,14 +75,98 @@ abstract class ContentClothing extends \ContentElement {
                     } else if ($objProperty->type == 'select') {
                         \Input::setGet($objProperty->alias, \Input::get($objProperty->alias));
                         $strValue = \Input::get($objProperty->alias);
-                        if (ClothingPropertyModel::isValidValue($objProperty->alias, $strValue)) {
+                        if ($strValue != null && ClothingPropertyModel::isValidValue($objProperty->alias, $strValue)) {
                             self::$arrProperties[$objProperty->alias] = $strValue;
                         }
                     }
                 }
             }
 
-            self::$arrMatchedItems = ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(self::$intCategory, self::$intMaterial, self::$intColor, self::$arrProperties);
+            self::$arrMatchedItems = ClothingItemModel::findPublishedByCategoryAndMaterialAndColor(self::$intCategory, self::$intColor, self::$intMaterial, self::$arrProperties);
+            $objPage = PageModel::findByPk($this->clothingDetailPage);
+            if (count(self::$arrMatchedItems) > 0) {
+                foreach (self::$arrMatchedItems as $i => $item) {
+                    self::$arrMatchedItems[$i]->href = $objPage != null ? static::generateFrontendUrl($objPage->row(), '/' . $item->alias) : '';
+                    self::$arrMatchedItems[$i]->images = array();
+                    $multiSRC = StringUtil::deserialize($item->multiSRC);
+                    if (!empty($multiSRC) && \is_array($multiSRC)) {
+                        $objFiles = FilesModel::findMultipleByUuids($multiSRC);
+                        if ($objFiles !== null) {
+                            $images = array();
+                            while ($objFiles->next()) {
+                                if (isset($images[$objFiles->path]) || !file_exists(System::getContainer()->getParameter('kernel.project_dir') . '/' . $objFiles->path)) {
+                                    continue;
+                                }
+                                if ($objFiles->type == 'file') {
+                                    $objFile = new File($objFiles->path);
+                                    if (!$objFile->isImage) {
+                                        continue;
+                                    }
+                                    $images[$objFiles->path] = array
+                                    (
+                                        'id' => $objFiles->id,
+                                        'uuid' => $objFiles->uuid,
+                                        'name' => $objFile->basename,
+                                        'singleSRC' => $objFiles->path,
+                                        'filesModel' => $objFiles->current()
+                                    );
+                                    $auxDate[] = $objFile->mtime;
+                                } else {
+                                    $objSubfiles = FilesModel::findByPid($objFiles->uuid, array('order' => 'name'));
+                                    if ($objSubfiles === null) {
+                                        continue;
+                                    }
+                                    while ($objSubfiles->next()) {
+                                        if ($objSubfiles->type == 'folder') {
+                                            continue;
+                                        }
+                                        $objFile = new File($objSubfiles->path);
+                                        if (!$objFile->isImage) {
+                                            continue;
+                                        }
+                                        $images[$objSubfiles->path] = array
+                                        (
+                                            'id' => $objSubfiles->id,
+                                            'uuid' => $objSubfiles->uuid,
+                                            'name' => $objFile->basename,
+                                            'singleSRC' => $objSubfiles->path,
+                                            'filesModel' => $objSubfiles->current()
+                                        );
+                                        $auxDate[] = $objFile->mtime;
+                                    }
+                                }
+                            }
+                            if (class_exists('ArrayUtil')) {
+
+                                $images = ArrayUtil::sortByOrderField($images, $item->orderSRC);
+                                self::$arrMatchedItems[$i]->images = array_values($images);
+                            }
+                            else if ($item->orderSRC)
+                            {
+                                $tmp = StringUtil::deserialize($item->orderSRC);
+                                if (!empty($tmp) && \is_array($tmp))
+                                {
+                                    $arrOrder = array_map(static function () {}, array_flip($tmp));
+                                    foreach ($images as $k=>$v)
+                                    {
+                                        if (\array_key_exists($v['uuid'], $arrOrder))
+                                        {
+                                            $arrOrder[$v['uuid']] = $v;
+                                            unset($images[$k]);
+                                        }
+                                    }
+                                    if (!empty($images))
+                                    {
+                                        $arrOrder = array_merge($arrOrder, array_values($images));
+                                    }
+                                    self::$arrMatchedItems[$i]->images = array_values(array_filter($arrOrder));
+                                    unset($arrOrder);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             self::$strCategory = \Input::get($GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category']);
             self::$autoItemParsed = true;
         }
@@ -142,17 +232,23 @@ abstract class ContentClothing extends \ContentElement {
         global $objPage;
         $arrUrlParts = array('');
         if ($strProperty == 'category') {
-            $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . $value;
+            if ($value !== false) {
+                $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . $value;
+            }
         } else if (static::$intCategory > 0) {
             $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['category'] . '/' . static::$strCategory;
         }
         if ($strProperty == 'color') {
-            $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . $value;
+            if ($value !== false) {
+                $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . $value;
+            }
         } else if (static::$intColor > 0) {
             $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['color'] . '/' . static::$strColor;
         }
         if ($strProperty == 'material') {
-            $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . $value;
+            if ($value !== false) {
+                $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . $value;
+            }
         } else if (static::$intMaterial > 0) {
             $arrUrlParts[] = $GLOBALS['TL_LANG']['MSC']['CLOTHING_CATALOG']['clothing_properties']['material'] . '/' . static::$strMaterial;
         }
@@ -184,9 +280,11 @@ abstract class ContentClothing extends \ContentElement {
                 }
             }
         }
+        $results = ClothingItemModel::findPublishedByCategoryAndMaterialAndColor($strProperty == 'category' ? $id : static::$intCategory, $strProperty == 'color' ? $id : static::$intColor, $strProperty == 'material' ? $id : static::$intMaterial, $properties);
         $arrResult = array(
             'href' => static::generateFrontendUrl($objPage->row(), implode('/', $arrUrlParts)),
-            'resultCount' => count(ClothingItemModel::findPublishedByCategoryAndMaterialAndColor($strProperty == 'category' ? $id : parent::$intCategory, $strProperty == 'color' ? $id : parent::$intColor, $strProperty == 'material' ? $id : static::$intMaterial, $properties))
+            'resultCount' => count($results),
+            'results' => $results
         );
         return $arrResult;
     }

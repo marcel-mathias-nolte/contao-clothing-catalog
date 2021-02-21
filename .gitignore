@@ -34,3 +34,9 @@ build.log
 
 # except this file
 !.gitignore
+
+src/Elements/ContentClothingDetails.php
+src/Elements/ContentClothingList.php
+src/Resources/contao/templates/elements/ce_clothing_item_list.html5
+src/Resources/contao/templates/elements/ce_clothing_item_list_item.html5
+src/Resources/contao/templates/elements/ce_clothing_item_list_details.html5
