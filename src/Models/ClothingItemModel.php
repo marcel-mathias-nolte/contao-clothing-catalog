@@ -181,10 +181,8 @@ class ClothingItemModel extends Model
 
         $arrResults = array();
         $objResult = static::findBy($arrColumns, $arrValues, $arrOptions);
+
         if ($objResult != null) {
-            if (!($objResult instanceof Collection) && !is_array($objResult)) {
-                $objResult = array($objResult);
-            }
             foreach ($objResult as $objRecord) {
                 $arrRow = $objRecord->row();
                 $arrRow['properties'] = deserialize($arrRow['properties']);
@@ -202,7 +200,7 @@ class ClothingItemModel extends Model
                     }
                 }
                 $arrResults[] = (object)$arrRow;
-                var_dump($arrResults);
+
             }
         }
 
