@@ -330,7 +330,7 @@ class ClothingItems extends Backend
 
     protected static $arrOptionValuesCache = false;
 
-    public function getOptionValues(string $alias) {
+    public static function getOptionValues(string $alias) {
         if (static::$arrOptionValuesCache === false) {
             $arrValues = array();
             $objLister = \Database::getInstance()->prepare("SELECT a.alias AS grp, b.alias AS alias, b.title AS label FROM " . ClothingPropertyModel::$strTable . " a INNER JOIN " . ClothingPropertyValueModel::$strTable . " b ON a.id = b.pid AND a.type = ? ORDER BY b.sorting")->execute('select');
@@ -344,7 +344,7 @@ class ClothingItems extends Backend
 
     protected static $arrOptionsCache = false;
 
-    public function getOptions() {
+    public static function getOptions() {
         if (static::$arrOptionsCache === false) {
             $arrValues = array();
             $objProperties = ClothingPropertyModel::findByType('select', ['order' => 'title ASC']);
