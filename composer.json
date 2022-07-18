@@ -40,5 +40,11 @@
     "support": {
         "issues": "https://github.com/marcel-mathias-nolte/contao-clothing-catalog/issues",
         "source": "https://github.com/marcel-mathias-nolte/contao-clothing-catalog"
+    },
+    "config": {
+        "allow-plugins": {
+            "contao-components/installer": true,
+            "contao-community-alliance/composer-plugin": true
+        }
     }
 }
